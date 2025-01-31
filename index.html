@@ -1,94 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alafjiri Academy</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alfajiri Academy</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Sidebar transition for small devices */
+    @media (max-width: 1024px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+      }
+      .sidebar-open .sidebar {
+        transform: translateX(0);
+      }
+      .main-content {
+        margin-left: 0; /* Default margin for small screens */
+      }
+      .sidebar-open .main-content {
+        margin-left: 16rem; /* Adjust margin when the sidebar is open */
+      }
+    }
+  </style>
 </head>
-<body>
-<header>
-    <div class="navbar">
-        <h1>ALFAJIRI ACADEMY MALABA</h1>
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="about.html">About Us</a>
-            <a href="admissions.html">Admissions</a>
-            <a href="academics.html">Academics</a>
-            <a href="faculty.html">Announcements</a>
-        </nav>
-    </div>
+<body class="bg-gray-100 text-gray-800">
 
-</header>
- <section class="image-slider">
-    <div class="slider">
-        <div class="slides">
-            <img src="images/logob.jpg" alt="Slide 1">
-            <img src="images/logow.jpg" alt="Slide 2">
-            <img src="images/logob.jpg" alt="Slide 3">
-        </div>
-        <button class="prev" onclick="moveSlide(-1)">&#10094;</button>
-        <button class="next" onclick="moveSlide(1)">&#10095;</button>
-    </div>
-</section>
-<!-- Main Content -->
-<main>
+  <!-- Mobile Menu Button -->
+  <button 
+    class="lg:hidden fixed top-4 left-4 z-20 bg-blue-900 text-white p-3 rounded-full shadow-md"
+    onclick="toggleSidebar()">
+    ☰
+  </button>
 
-    <section class="hero">
-        <h2>Welcome to Alfajiri Academy Malaba</h2>
-        <p>Providing quality education for future leaders.</p>
-        <button onclick="window.location.href='admissions.html'">Enroll Now</button>
+  <!-- Sidebar Navigation -->
+  <nav class="sidebar fixed top-0 left-0 h-full w-64 bg-blue-900 text-white flex flex-col shadow-lg z-10 lg:transform-none lg:transition-none">
+    <div class="px-6 py-4 text-2xl font-bold border-b border-blue-700">
+      Kibabii University
+    </div>
+    <ul class="flex flex-col mt-6">
+      <li class="px-6 py-3 hover:bg-blue-700">
+        <a href="#home" onclick="showSection('home')" class="block">Home</a>
+      </li>
+      <li class="px-6 py-3 hover:bg-blue-700">
+        <a href="#about" onclick="showSection('about')" class="block">About</a>
+      </li>
+      <li class="px-6 py-3 hover:bg-blue-700">
+        <a href="#courses" onclick="showSection('courses')" class="block">Courses</a>
+      </li>
+      <li class="px-6 py-3 hover:bg-blue-700">
+        <a href="#admissions" onclick="showSection('admissions')" class="block">Admissions</a>
+      </li>
+      <li class="px-6 py-3 hover:bg-blue-700">
+        <a href="#contact" onclick="showSection('contact')" class="block">Contact</a>
+      </li>
+      <li class="px-6 py-3 hover:bg-blue-700">
+        <a href="#login" onclick="showSection('login')" class="block">Student Portal</a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content lg:ml-64 p-4 lg:p-8 transition-all duration-300">
+    <!-- Home Section -->
+    <section id="home" class="active">
+      <div class="text-center py-16 bg-blue-100 rounded-lg shadow-md">
+        <h1 class="text-4xl font-bold text-blue-900">Welcome to Kibabii University</h1>
+        <p class="mt-4 text-xl text-gray-700">Empowering young minds through education and innovation.</p>
+      </div>
     </section>
 
-    <section class="info-section">
-        <div class="info-card">
-            <h3>About Us</h3>
-            <p>Learn more about our mission, values, and history.</p>
-            <a href="about.html">Read More</a>
-        </div>
-        <div class="info-card">
-            <h3>Admissions</h3>
-            <p>Join our community and start your journey with us.</p>
-            <a href="admissions.html">Get Started</a>
-        </div>
-        <div class="info-card">
-            <h3>Academics</h3>
-            <p>Explore our academic programs and opportunities.</p>
-            <a href="academics.html">Explore Programs</a>
-        </div>
+    <!-- About Section -->
+    <section id="about" class="hidden">
+      <h2 class="text-3xl font-bold text-blue-900">About Us</h2>
+      <p class="mt-4 text-gray-700">
+        Kibabii University is a center of academic excellence, committed to providing quality education, fostering innovation, and producing globally competitive graduates.
+      </p>
     </section>
-</main>
 
-<!-- Footer -->
-<footer id="footer-container">
-        <div class="footer-section">
-            <h2>Mission</h2>
-            <p>To offer a well-rounded education that blends strong academics with hands-on skills like music, computer science, robotics, shoemaking, and karate. We strive to build students' critical thinking, creativity, and values, equipping them to succeed in a fast-evolving world.</p>
-        
-            
+    <!-- Courses Section -->
+    <section id="courses" class="hidden">
+      <h2 class="text-3xl font-bold text-blue-900">Our Courses</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+        <div class="p-4 bg-white shadow rounded-lg">
+          <h3 class="text-xl font-semibold text-blue-800">Computer Science</h3>
+          <p class="mt-2 text-gray-600">Learn cutting-edge technology and software development skills.</p>
         </div>
-        <div class="footer-section">
-            <h3>Vision</h3>
-            <p>To be a leading institution that nurtures well-rounded, skillful, and morally grounded students, equipped to excel academically and contribute innovatively to their communities and the world.</p>
+        <div class="p-4 bg-white shadow rounded-lg">
+          <h3 class="text-xl font-semibold text-blue-800">Business Administration</h3>
+          <p class="mt-2 text-gray-600">Gain leadership skills and business knowledge for the corporate world.</p>
         </div>
-        <div class="footer-section">
-            <h3>Contact US</h3>
-            <p>Emal: alfajiriacademy@gmail.com</p>
-            <p>Phone: 0727856787</p>
+        <div class="p-4 bg-white shadow rounded-lg">
+          <h3 class="text-xl font-semibold text-blue-800">Education</h3>
+          <p class="mt-2 text-gray-600">Become a qualified teacher and inspire the next generation.</p>
         </div>
-        <div class="footer-section social-media">
-            <h3>Follow Us</h3>
+      </div>
+    </section>
 
-             <a href="https://facebook.com" target="_blank" class="social-icon">Facebook</a>
-                        <a href="https://twitter.com" target="_blank" class="social-icon">Twitter</a>
-                        <a href="https://instagram.com" target="_blank" class="social-icon">Instagram</a>
-                        <a href="https://linkedin.com" target="_blank" class="social-icon">LinkedIn</a>
+    <!-- Admissions Section -->
+    <section id="admissions" class="hidden">
+      <h2 class="text-3xl font-bold text-blue-900">Admissions</h2>
+      <p class="mt-4 text-gray-700">
+        Join Kibabii University today! We offer competitive programs and an environment that fosters personal and academic growth.
+      </p>
+      <p class="mt-2 text-gray-600"><strong>Application Deadline:</strong> 31st March 2025</p>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="hidden">
+      <h2 class="text-3xl font-bold text-blue-900">Contact Us</h2>
+      <form class="mt-6 max-w-lg">
+        <input type="text" placeholder="Your Name" class="w-full p-3 border border-gray-300 rounded mb-4">
+        <input type="email" placeholder="Your Email" class="w-full p-3 border border-gray-300 rounded mb-4">
+        <textarea placeholder="Your Message" class="w-full p-3 border border-gray-300 rounded mb-4"></textarea>
+        <button class="w-full bg-blue-900 text-white py-2 rounded">Send Message</button>
+      </form>
+    </section>
+
+    <!-- Student Login -->
+    <section id="login" class="hidden">
+      <h2 class="text-3xl font-bold text-blue-900">Student Login</h2>
+      <form class="mt-6 max-w-md">
+        <input type="text" placeholder="Student ID" class="w-full p-3 border border-gray-300 rounded mb-4">
+        <input type="password" placeholder="Password" class="w-full p-3 border border-gray-300 rounded mb-4">
+        <button type="button" onclick="loginStudent()" class="w-full bg-blue-900 text-white py-2 rounded">Login</button>
+      </form>
+    </section>
+
+    <!-- Student Dashboard -->
+    <section id="dashboard" class="hidden">
+      <h2 class="text-3xl font-bold text-blue-900">Student Dashboard</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+        <div class="p-4 bg-white shadow rounded-lg">
+          <h3 class="text-xl font-semibold text-blue-800">School Fees</h3>
+          <p class="mt-2 text-gray-600">Check your school fee details and payment status.</p>
         </div>
-        <p>&copy; 2024 Alfajiri Academy Malaba. All rights reserved.</p>
-        <div class="footer-links">
-        <a href="privacy.html">Privacy Policy</a> |
-        <a href="terms.html">Terms of Use</a>
-    </div>
-    </footer>
+        <div class="p-4 bg-white shadow rounded-lg">
+          <h3 class="text-xl font-semibold text-blue-800">Unit Registration</h3>
+          <p class="mt-2 text-gray-600">Register for your courses each semester.</p>
+        </div>
+        <div class="p-4 bg-white shadow rounded-lg">
+          <h3 class="text-xl font-semibold text-blue-800">Exam Results</h3>
+          <p class="mt-2 text-gray-600">View your exam results by year and semester.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Show/Hide Sidebar on mobile
+    function toggleSidebar() {
+      document.body.classList.toggle('sidebar-open');
+    }
+
+    // Function to show a section and hide others
+    function showSection(sectionId) {
+      document.querySelectorAll('main section').forEach(section => {
+        section.classList.add('hidden');
+        section.classList.remove('active');
+      });
+      document.getElementById(sectionId).classList.remove('hidden');
+      document.getElementById(sectionId).classList.add('active');
+    }
+
+    // Simulated login function
+    function loginStudent() {
+      alert("Login successful! Redirecting to dashboard...");
+      showSection('dashboard');
+    }
+  </script>
 </body>
 </html>
