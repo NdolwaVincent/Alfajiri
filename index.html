@@ -1,178 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Alfajiri Academy</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    /* Sidebar transition for small devices */
-    @media (max-width: 1024px) {
-      .sidebar {
-        transform: translateX(-100%);
-        transition: transform 0.3s ease-in-out;
-      }
-      .sidebar-open .sidebar {
-        transform: translateX(0);
-      }
-      .main-content {
-        margin-left: 0; /* Default margin for small screens */
-      }
-      .sidebar-open .main-content {
-        margin-left: 16rem; /* Adjust margin when the sidebar is open */
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alfajiri Academy Malaba 2025 Students</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl">
+        <h2 class="text-2xl font-bold text-blue-900 text-center mb-6">Alfajiri Academy Malaba 2025 Students</h2>
 
-  <!-- Mobile Menu Button -->
-  <button 
-    class="lg:hidden fixed top-4 left-4 z-20 bg-blue-900 text-white p-3 rounded-full shadow-md"
-    onclick="toggleSidebar()">
-    ☰
-  </button>
+        <!-- Grade Selection Dropdown -->
+        <label for="gradeSelect" class="block text-gray-700">Select Grade to Fetch Students:</label>
+        <select id="gradeSelect" class="w-full p-2 border rounded mb-4" required>
+            <option value="">Select Grade</option>
+            <option value="Grade1">Grade 1</option>
+            <option value="Grade2">Grade 2</option>
+            <option value="Grade3">Grade 3</option>
+            <option value="Grade4">Grade 4</option>
+            <option value="Grade5">Grade 5</option>
+            <option value="Grade6">Grade 6</option>
+            <option value="Grade7">Grade 7</option>
+            <option value="Grade8">Grade 8</option>
+            <option value="Grade9">Grade 9</option>
+        </select>
 
-  <!-- Sidebar Navigation -->
-  <nav class="sidebar fixed top-0 left-0 h-full w-64 bg-blue-900 text-white flex flex-col shadow-lg z-10 lg:transform-none lg:transition-none">
-    <div class="px-6 py-4 text-2xl font-bold border-b border-blue-700">
-      Kibabii University
+        <button id="fetchByGradeBtn" class="w-full bg-purple-600 text-white py-2 rounded mt-2">Fetch Students by Grade</button>
+
+        <div id="result" class="mt-6 text-gray-800"></div>
     </div>
-    <ul class="flex flex-col mt-6">
-      <li class="px-6 py-3 hover:bg-blue-700">
-        <a href="#home" onclick="showSection('home')" class="block">Home</a>
-      </li>
-      <li class="px-6 py-3 hover:bg-blue-700">
-        <a href="#about" onclick="showSection('about')" class="block">About</a>
-      </li>
-      <li class="px-6 py-3 hover:bg-blue-700">
-        <a href="#courses" onclick="showSection('courses')" class="block">Courses</a>
-      </li>
-      <li class="px-6 py-3 hover:bg-blue-700">
-        <a href="#admissions" onclick="showSection('admissions')" class="block">Admissions</a>
-      </li>
-      <li class="px-6 py-3 hover:bg-blue-700">
-        <a href="#contact" onclick="showSection('contact')" class="block">Contact</a>
-      </li>
-      <li class="px-6 py-3 hover:bg-blue-700">
-        <a href="#login" onclick="showSection('login')" class="block">Student Portal</a>
-      </li>
-    </ul>
-  </nav>
 
-  <!-- Main Content -->
-  <main class="main-content lg:ml-64 p-4 lg:p-8 transition-all duration-300">
-    <!-- Home Section -->
-    <section id="home" class="active">
-      <div class="text-center py-16 bg-blue-100 rounded-lg shadow-md">
-        <h1 class="text-4xl font-bold text-blue-900">Welcome to Kibabii University</h1>
-        <p class="mt-4 text-xl text-gray-700">Empowering young minds through education and innovation.</p>
-      </div>
-    </section>
+    <!-- Firebase script -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js';
+        import { getDatabase, ref, get } from 'https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js';
 
-    <!-- About Section -->
-    <section id="about" class="hidden">
-      <h2 class="text-3xl font-bold text-blue-900">About Us</h2>
-      <p class="mt-4 text-gray-700">
-        Kibabii University is a center of academic excellence, committed to providing quality education, fostering innovation, and producing globally competitive graduates.
-      </p>
-    </section>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
+            authDomain: "alfajiri-database.firebaseapp.com",
+            databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
+            projectId: "alfajiri-database",
+            storageBucket: "alfajiri-database.appspot.com",
+            messagingSenderId: "310417854615",
+            appId: "1:310417854615:web:6f65002a119caeaf9119d2",
+            measurementId: "G-21TBZCRBHM"
+        };
 
-    <!-- Courses Section -->
-    <section id="courses" class="hidden">
-      <h2 class="text-3xl font-bold text-blue-900">Our Courses</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-        <div class="p-4 bg-white shadow rounded-lg">
-          <h3 class="text-xl font-semibold text-blue-800">Computer Science</h3>
-          <p class="mt-2 text-gray-600">Learn cutting-edge technology and software development skills.</p>
-        </div>
-        <div class="p-4 bg-white shadow rounded-lg">
-          <h3 class="text-xl font-semibold text-blue-800">Business Administration</h3>
-          <p class="mt-2 text-gray-600">Gain leadership skills and business knowledge for the corporate world.</p>
-        </div>
-        <div class="p-4 bg-white shadow rounded-lg">
-          <h3 class="text-xl font-semibold text-blue-800">Education</h3>
-          <p class="mt-2 text-gray-600">Become a qualified teacher and inspire the next generation.</p>
-        </div>
-      </div>
-    </section>
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
 
-    <!-- Admissions Section -->
-    <section id="admissions" class="hidden">
-      <h2 class="text-3xl font-bold text-blue-900">Admissions</h2>
-      <p class="mt-4 text-gray-700">
-        Join Kibabii University today! We offer competitive programs and an environment that fosters personal and academic growth.
-      </p>
-      <p class="mt-2 text-gray-600"><strong>Application Deadline:</strong> 31st March 2025</p>
-    </section>
+        // Fetch Students Based on Selected Grade
+        function fetchStudentsByGrade() {
+            const grade = document.getElementById('gradeSelect').value;
+            if (!grade) {
+                alert("Please select a grade to fetch students.");
+                return;
+            }
 
-    <!-- Contact Section -->
-    <section id="contact" class="hidden">
-      <h2 class="text-3xl font-bold text-blue-900">Contact Us</h2>
-      <form class="mt-6 max-w-lg">
-        <input type="text" placeholder="Your Name" class="w-full p-3 border border-gray-300 rounded mb-4">
-        <input type="email" placeholder="Your Email" class="w-full p-3 border border-gray-300 rounded mb-4">
-        <textarea placeholder="Your Message" class="w-full p-3 border border-gray-300 rounded mb-4"></textarea>
-        <button class="w-full bg-blue-900 text-white py-2 rounded">Send Message</button>
-      </form>
-    </section>
+            const studentsRef = ref(database, `NewDatabase/${grade}/Students/`);
+            get(studentsRef)
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const studentsData = snapshot.val();
+                        let resultHtml = `
+                            <h3 class="text-xl font-semibold mt-4 mb-2">Students in ${grade}</h3>
+                            <table class="min-w-full bg-white border border-gray-300 rounded-lg">
+                                <thead>
+                                    <tr class="bg-gray-200">
+                                        <th class="px-4 py-2 border text-xs sm:text-sm md:text-base">Code</th>
+                                        <th class="px-4 py-2 border text-xs sm:text-sm md:text-base">Name</th>
+                                        <th class="px-4 py-2 border text-xs sm:text-sm md:text-base">Gender</th>
+                                        <th class="px-4 py-2 border text-xs sm:text-sm md:text-base">Parent</th>
+                                        <th class="px-4 py-2 border text-xs sm:text-sm md:text-base">Phone</th>
+                                        <th class="px-4 py-2 border text-xs sm:text-sm md:text-base">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                        `;
 
-    <!-- Student Login -->
-    <section id="login" class="hidden">
-      <h2 class="text-3xl font-bold text-blue-900">Student Login</h2>
-      <form class="mt-6 max-w-md">
-        <input type="text" placeholder="Student ID" class="w-full p-3 border border-gray-300 rounded mb-4">
-        <input type="password" placeholder="Password" class="w-full p-3 border border-gray-300 rounded mb-4">
-        <button type="button" onclick="loginStudent()" class="w-full bg-blue-900 text-white py-2 rounded">Login</button>
-      </form>
-    </section>
+                        // Loop through students in the grade and add them to the table
+                        for (let code in studentsData) {
+                            const student = studentsData[code];
+                            resultHtml += `
+                                <tr>
+                                    <td class="px-4 py-2 border text-xs sm:text-sm md:text-base">${code}</td>
+                                    <td class="px-4 py-2 border text-xs sm:text-sm md:text-base">${student.name}</td>
+                                    <td class="px-4 py-2 border text-xs sm:text-sm md:text-base">${student.gender}</td>
+                                    <td class="px-4 py-2 border text-xs sm:text-sm md:text-base">${student.parent}</td>
+                                    <td class="px-4 py-2 border text-xs sm:text-sm md:text-base">${student.phone}</td>
+                                    <td class="px-4 py-2 border text-xs sm:text-sm md:text-base">${student.status}</td>
+                                </tr>
+                            `;
+                        }
 
-    <!-- Student Dashboard -->
-    <section id="dashboard" class="hidden">
-      <h2 class="text-3xl font-bold text-blue-900">Student Dashboard</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-        <div class="p-4 bg-white shadow rounded-lg">
-          <h3 class="text-xl font-semibold text-blue-800">School Fees</h3>
-          <p class="mt-2 text-gray-600">Check your school fee details and payment status.</p>
-        </div>
-        <div class="p-4 bg-white shadow rounded-lg">
-          <h3 class="text-xl font-semibold text-blue-800">Unit Registration</h3>
-          <p class="mt-2 text-gray-600">Register for your courses each semester.</p>
-        </div>
-        <div class="p-4 bg-white shadow rounded-lg">
-          <h3 class="text-xl font-semibold text-blue-800">Exam Results</h3>
-          <p class="mt-2 text-gray-600">View your exam results by year and semester.</p>
-        </div>
-      </div>
-    </section>
-  </main>
+                        resultHtml += "</tbody></table>";
+                        document.getElementById('result').innerHTML = resultHtml;
+                    } else {
+                        document.getElementById('result').innerHTML = "<p>No students found in this grade.</p>";
+                    }
+                })
+                .catch((error) => {
+                    alert("Error fetching data: " + error);
+                });
+        }
 
-  <script>
-    // Show/Hide Sidebar on mobile
-   function toggleSidebar() {
-  document.body.classList.toggle('sidebar-open');
-}
-
-// Function to show a section and hide others
-function showSection(sectionId) {
-  document.querySelectorAll('main section').forEach(section => {
-    section.classList.add('hidden');
-    section.classList.remove('active');
-  });
-  document.getElementById(sectionId).classList.remove('hidden');
-  document.getElementById(sectionId).classList.add('active');
-
-  // Close sidebar when an item is clicked (for mobile)
-  if (window.innerWidth <= 1024) {
-    document.body.classList.remove('sidebar-open');
-  }
-}
-
-// Simulated login function
-function loginStudent() {
-  alert("Login successful! Redirecting to dashboard...");
-  showSection('dashboard');
-}
-  </script>
+        // Add Event Listener for the Fetch Students by Grade Button
+        document.getElementById('fetchByGradeBtn').addEventListener('click', fetchStudentsByGrade);
+    </script>
 </body>
 </html>
