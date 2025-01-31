@@ -149,25 +149,30 @@
 
   <script>
     // Show/Hide Sidebar on mobile
-    function toggleSidebar() {
-      document.body.classList.toggle('sidebar-open');
-    }
+   function toggleSidebar() {
+  document.body.classList.toggle('sidebar-open');
+}
 
-    // Function to show a section and hide others
-    function showSection(sectionId) {
-      document.querySelectorAll('main section').forEach(section => {
-        section.classList.add('hidden');
-        section.classList.remove('active');
-      });
-      document.getElementById(sectionId).classList.remove('hidden');
-      document.getElementById(sectionId).classList.add('active');
-    }
+// Function to show a section and hide others
+function showSection(sectionId) {
+  document.querySelectorAll('main section').forEach(section => {
+    section.classList.add('hidden');
+    section.classList.remove('active');
+  });
+  document.getElementById(sectionId).classList.remove('hidden');
+  document.getElementById(sectionId).classList.add('active');
 
-    // Simulated login function
-    function loginStudent() {
-      alert("Login successful! Redirecting to dashboard...");
-      showSection('dashboard');
-    }
+  // Close sidebar when an item is clicked (for mobile)
+  if (window.innerWidth <= 1024) {
+    document.body.classList.remove('sidebar-open');
+  }
+}
+
+// Simulated login function
+function loginStudent() {
+  alert("Login successful! Redirecting to dashboard...");
+  showSection('dashboard');
+}
   </script>
 </body>
 </html>
