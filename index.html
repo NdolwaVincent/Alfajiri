@@ -3,111 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alfajiri Academy Malaba 2025 Students</title>
+    <title>Alfajiri Academy Malaba</title>
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl">
-        <h2 class="text-2xl font-bold text-blue-900 text-center mb-6">Alfajiri Academy Malaba 2025 Students</h2>
 
-        <!-- Grade Selection Dropdown -->
-        <label for="gradeSelect" class="block text-gray-700">Select Grade to Fetch Students:</label>
-        <select id="gradeSelect" class="w-full p-2 border rounded mb-4" required>
-            <option value="">Select Grade</option>
-            <option value="Grade1">Grade 1</option>
-            <option value="Grade2">Grade 2</option>
-            <option value="Grade3">Grade 3</option>
-            <option value="Grade4">Grade 4</option>
-            <option value="Grade5">Grade 5</option>
-            <option value="Grade6">Grade 6</option>
-            <option value="Grade7">Grade 7</option>
-            <option value="Grade8">Grade 8</option>
-            <option value="Grade9">Grade 9</option>
-        </select>
-
-        <button id="fetchByGradeBtn" class="w-full bg-purple-600 text-white py-2 rounded mt-2">Fetch Students by Grade</button>
-
-        <div id="result" class="mt-6 text-gray-800"></div>
-    </div>
-
-    <!-- Firebase script -->
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js';
-        import { getDatabase, ref, get } from 'https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js';
-
-        // Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
-            authDomain: "alfajiri-database.firebaseapp.com",
-            databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
-            projectId: "alfajiri-database",
-            storageBucket: "alfajiri-database.appspot.com",
-            messagingSenderId: "310417854615",
-            appId: "1:310417854615:web:6f65002a119caeaf9119d2",
-            measurementId: "G-21TBZCRBHM"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
-
-        // Fetch Students Based on Selected Grade
-        function fetchStudentsByGrade() {
-            const grade = document.getElementById('gradeSelect').value;
-            if (!grade) {
-                alert("Please select a grade to fetch students.");
-                return;
-            }
-
-            const studentsRef = ref(database, `NewDatabase/${grade}/Students/`);
-            get(studentsRef)
-                .then((snapshot) => {
-                    if (snapshot.exists()) {
-                        const studentsData = snapshot.val();
-                        let resultHtml = `
-                            <h3 class="text-xl font-semibold mt-4 mb-2">Students in ${grade}</h3>
-                            <table class="min-w-full bg-white border border-gray-300 rounded-lg">
-                                <thead>
-                                    <tr class="bg-gray-200">
-                                        <th class="px-4 py-2 border text-xs sm:text-sm md:text-base">Code</th>
-                                        <th class="px-4 py-2 border text-xs sm:text-sm md:text-base">Name</th>
-                                        <th class="px-4 py-2 border text-xs sm:text-sm md:text-base">Gender</th>
-                                        <th class="px-4 py-2 border text-xs sm:text-sm md:text-base">Parent</th>
-                                        <th class="px-4 py-2 border text-xs sm:text-sm md:text-base">Phone</th>
-                                        <th class="px-4 py-2 border text-xs sm:text-sm md:text-base">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                        `;
-
-                        // Loop through students in the grade and add them to the table
-                        for (let code in studentsData) {
-                            const student = studentsData[code];
-                            resultHtml += `
-                                <tr>
-                                    <td class="px-4 py-2 border text-xs sm:text-sm md:text-base">${code}</td>
-                                    <td class="px-4 py-2 border text-xs sm:text-sm md:text-base">${student.name}</td>
-                                    <td class="px-4 py-2 border text-xs sm:text-sm md:text-base">${student.gender}</td>
-                                    <td class="px-4 py-2 border text-xs sm:text-sm md:text-base">${student.parent}</td>
-                                    <td class="px-4 py-2 border text-xs sm:text-sm md:text-base">${student.phone}</td>
-                                    <td class="px-4 py-2 border text-xs sm:text-sm md:text-base">${student.status}</td>
-                                </tr>
-                            `;
-                        }
-
-                        resultHtml += "</tbody></table>";
-                        document.getElementById('result').innerHTML = resultHtml;
-                    } else {
-                        document.getElementById('result').innerHTML = "<p>No students found in this grade.</p>";
-                    }
-                })
-                .catch((error) => {
-                    alert("Error fetching data: " + error);
-                });
+    <style>
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
         }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900">
+    
+    <!-- Navigation Bar -->
+    <header class="fixed w-full bg-white shadow-lg z-50">
+        <div class="container mx-auto flex justify-between items-center py-3 px-6">
+            <h1 class="text-2xl font-bold text-blue-600">Alfajiri Academy Malaba</h1>
+            <nav id="menu" class="hidden md:flex space-x-6 text-gray-700">
+                <a href="index.html" class="hover:text-blue-600">Home</a>
+                <a href="about.html" class="hover:text-blue-600">About</a>
+                <a href="admissions.html" class="hover:text-blue-600">Admissions</a>
+                <a href="academics.html" class="hover:text-blue-600">Academics</a>
+                <a href="contact.html" class="hover:text-blue-600">Contact</a>
+            </nav>
+            <button id="menu-btn" class="md:hidden text-blue-600">☰</button>
+        </div>
+    </header>
 
-        // Add Event Listener for the Fetch Students by Grade Button
-        document.getElementById('fetchByGradeBtn').addEventListener('click', fetchStudentsByGrade);
+    <!-- Hero Section -->
+    <section class="relative h-[500px] flex items-center justify-center bg-cover bg-center text-white text-4xl font-bold" style="background-image: url('images/school-banner.jpg');">
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <h2 class="relative animate-fadeIn">Welcome to Alfajiri Academy Malaba</h2>
+    </section>
+
+    <!-- Vision and Mission -->
+    <section class="container mx-auto p-8">
+        <div class="text-center">
+            <h2 class="text-3xl font-bold text-blue-600 mb-4">Our Vision & Mission</h2>
+            <p class="text-gray-700 max-w-2xl mx-auto leading-relaxed">To be a center of excellence in education and skill development, nurturing creativity, innovation, and leadership.</p>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="container mx-auto p-8">
+        <h2 class="text-3xl font-semibold text-center text-blue-600 mb-4">Our Services</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="bg-white p-6 rounded-lg shadow hover:shadow-xl transition">
+                <h3 class="text-xl font-bold">📚 Academic Excellence</h3>
+                <p>High-quality education with a modern curriculum.</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow hover:shadow-xl transition">
+                <h3 class="text-xl font-bold">🎭 Co-curricular Activities</h3>
+                <p>Engaging programs to develop student talent.</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow hover:shadow-xl transition">
+                <h3 class="text-xl font-bold">💼 Leadership Training</h3>
+                <p>Building the next generation of leaders.</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow hover:shadow-xl transition">
+                <h3 class="text-xl font-bold">🔧 Vocational Skills</h3>
+                <p>Empowering students with practical skills.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section class="container mx-auto p-8">
+        <h2 class="text-3xl font-semibold text-center text-blue-600 mb-4">Skills We Offer</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-blue-50 p-6 rounded-lg shadow-md">
+                <h3 class="text-xl font-bold text-blue-600">🎸 Band</h3>
+                <p>Join our vibrant music band and learn instruments.</p>
+            </div>
+            <div class="bg-blue-50 p-6 rounded-lg shadow-md">
+                <h3 class="text-xl font-bold text-blue-600">🤖 Robotics</h3>
+                <p>Learn programming and build innovative robots.</p>
+            </div>
+            <div class="bg-blue-50 p-6 rounded-lg shadow-md">
+                <h3 class="text-xl font-bold text-blue-600">📱 Android Development</h3>
+                <p>Master mobile app development with Kotlin & Java.</p>
+            </div>
+            <div class="bg-blue-50 p-6 rounded-lg shadow-md">
+                <h3 class="text-xl font-bold text-blue-600">👞 Shoe Making</h3>
+                <p>Hands-on experience in crafting high-quality shoes.</p>
+            </div>
+            <div class="bg-blue-50 p-6 rounded-lg shadow-md">
+                <h3 class="text-xl font-bold text-blue-600">🔨 Carpentry</h3>
+                <p>Professional training in woodworking and furniture.</p>
+            </div>
+            <div class="bg-blue-50 p-6 rounded-lg shadow-md">
+                <h3 class="text-xl font-bold text-blue-600">🎻 Violin & Keyboard</h3>
+                <p>Classical and modern instrument training.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest News -->
+    <section class="container mx-auto p-8">
+        <h2 class="text-3xl font-semibold text-center text-blue-600 mb-4">Latest News</h2>
+        <ul id="news-list" class="space-y-2 bg-white p-6 rounded shadow">
+            <li class="text-gray-700">Loading news...</li>
+        </ul>
+    </section>
+
+    <!-- Footer with Social Media -->
+    <footer class="bg-gray-900 text-white text-center p-6 mt-8">
+        <p>&copy; 2025 Alfajiri Academy Malaba. All rights reserved.</p>
+        <div class="flex justify-center space-x-6 mt-4">
+            <a href="https://facebook.com" target="_blank" class="hover:text-gray-400">📘 Facebook</a>
+            <a href="https://twitter.com" target="_blank" class="hover:text-gray-400">🐦 Twitter</a>
+            <a href="https://instagram.com" target="_blank" class="hover:text-gray-400">📸 Instagram</a>
+            <a href="https://linkedin.com" target="_blank" class="hover:text-gray-400">💼 LinkedIn</a>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Menu Toggle -->
+    <script>
+        document.getElementById("menu-btn").addEventListener("click", function() {
+            document.getElementById("menu").classList.toggle("hidden");
+        });
     </script>
+
 </body>
 </html>
