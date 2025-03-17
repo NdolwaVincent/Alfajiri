@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student GitHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+        import { getDatabase, ref, set, push, get } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
+        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-storage.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyD...",
+            authDomain: "alfajiri-database.firebaseapp.com",
+            databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
+            projectId: "alfajiri-database",
+            storageBucket: "alfajiri-database.appspot.com",
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const storage = getStorage(app);
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const userCode = sessionStorage.getItem("userCode");
+            if (userCode) {
+                showDashboard(userCode);
+            } else {
+                showLogin();
+            }
+        });
+
+        function showLogin() {
+            document.getElementById("loginSection").classList.remove("hidden");
+            document.getElementById("dashboardSection").classList.add("hidden");
+
+            document.getElementById("loginForm").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const code = document.getElementById("code").value;
+                const password = document.getElementById("password").value;
+
+                const snapshot = await get(ref(database, `users/${code}`));
+                if (snapshot.exists()) {
+                    const userData = snapshot.val();
+                    if (userData.password === password) {
+                        sessionStorage.setItem("userCode", code);
+                        showDashboard(code);
+                    } else {
+                        alert("Incorrect password!");
+                    }
+                } else {
+                    alert("Project Code not found!");
+                }
+            });
+        }
+
+        async function showDashboard(userCode) {
+            document.getElementById("loginSection").classList.add("hidden");
+            document.getElementById("dashboardSection").classList.remove("hidden");
+            document.getElementById("welcomeMsg").innerText = `Welcome, ${userCode}!`;
+            fetchProjects(userCode);
+
+            document.getElementById("uploadForm").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const title = document.getElementById("title").value;
+                const description = document.getElementById("description").value;
+                const file = document.getElementById("file").files[0];
+
+                if (!file) {
+                    alert("Please select a file.");
+                    return;
+                }
+
+                const fileRef = storageRef(storage, `projects/${userCode}/${file.name}`);
+                await uploadBytes(fileRef, file);
+                const fileUrl = await getDownloadURL(fileRef);
+
+                const newProjectRef = push(ref(database, `projects/${userCode}`));
+                set(newProjectRef, { title, description, fileUrl, fileType: file.type });
+
+                alert("Project uploaded successfully!");
+                document.getElementById("uploadForm").reset();
+                fetchProjects(userCode);
+            });
+        }
+
+        async function fetchProjects(userCode) {
+            const projectList = document.getElementById("projectList");
+            projectList.innerHTML = "<p>Loading...</p>";
+
+            const snapshot = await get(ref(database, `projects/${userCode}`));
+            projectList.innerHTML = "";
+
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                Object.values(data).forEach((project) => {
+                    let projectHtml = `<div class="p-4 border rounded bg-gray-50">`;
+                    projectHtml += `<h3 class="font-bold">${project.title}</h3>`;
+                    projectHtml += `<p class="text-gray-700">${project.description}</p>`;
+
+                    if (project.fileType.startsWith("image")) {
+                        projectHtml += `<img src="${project.fileUrl}" class="w-full h-40 object-cover rounded">`;
+                    } else if (project.fileType.startsWith("video")) {
+                        projectHtml += `<video controls class="w-full h-40 rounded">
+                                            <source src="${project.fileUrl}" type="${project.fileType}">
+                                        </video>`;
+                    } else {
+                        projectHtml += `<a href="${project.fileUrl}" target="_blank" class="text-blue-600 underline">Download File</a>`;
+                    }
+
+                    projectHtml += `</div>`;
+                    projectList.innerHTML += projectHtml;
+                });
+            } else {
+                projectList.innerHTML = "<p>No projects found.</p>";
+            }
+        }
+
+        function logout() {
+            sessionStorage.removeItem("userCode");
+            location.reload();
+        }
+    </script>
+</head>
+<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4">
+
+    <!-- Login Section -->
+    <div id="loginSection" class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+        <h2 class="text-2xl font-bold text-blue-900 text-center mb-6">Login</h2>
+        <form id="loginForm" class="space-y-4">
+            <input type="text" id="code" placeholder="Project Code" class="w-full p-2 border rounded" required>
+            <input type="password" id="password" placeholder="Password" class="w-full p-2 border rounded" required>
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded">Login</button>
+        </form>
+    </div>
+
+    <!-- Dashboard Section -->
+    <div id="dashboardSection" class="hidden w-full max-w-lg">
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h2 id="welcomeMsg" class="text-2xl font-bold text-blue-900 text-center mb-6">Welcome!</h2>
+            <form id="uploadForm" class="space-y-4">
+                <input type="text" id="title" placeholder="Project Title" class="w-full p-2 border rounded" required>
+                <textarea id="description" placeholder="Project Description" class="w-full p-2 border rounded" required></textarea>
+                <input type="file" id="file" class="w-full p-2 border rounded" required>
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded">Upload</button>
+            </form>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-lg mt-6">
+            <h2 class="text-2xl font-bold text-blue-900 text-center mb-6">Your Submissions</h2>
+            <div id="projectList" class="space-y-4"></div>
+        </div>
+
+        <button onclick="logout()" class="mt-4 bg-red-500 text-white py-2 px-4 rounded">Logout</button>
+    </div>
+
+</body>
+</html>
