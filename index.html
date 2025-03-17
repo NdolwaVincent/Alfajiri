@@ -10,95 +10,25 @@
 
     <style>
         body {
-            font-family: 'Times New Roman', serif;
-            font-size: 14px;
+            font-family: 'Times New Roman', sans-serif;
+            font-size: 15px;
         }
         html {
             scroll-behavior: smooth;
         }
     </style>
-
-    <!-- Firebase SDK -->
-    <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-
-    // Firebase Configuration
-    const firebaseConfig = {
-        apiKey: "AIzaSyD...",
-        authDomain: "alfajiri-database.firebaseapp.com",
-        databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
-        projectId: "alfajiri-database",
-        storageBucket: "alfajiri-database.appspot.com",
-    };
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
-
-    // Function to Fetch Skills
-    function fetchSkills() {
-        const skillsRef = ref(database, "skills");
-        const skillsContainer = document.getElementById("skills-container");
-
-        onValue(skillsRef, (snapshot) => {
-            skillsContainer.innerHTML = "";
-            snapshot.forEach((childSnapshot) => {
-                const skill = childSnapshot.val();
-                const skillCard = `
-                    <div class="bg-white shadow-md p-6 rounded-lg hover:shadow-xl transition">
-                        <img src="${skill.image}" class="w-full h-60 object-cover rounded-lg" alt="${skill.name}">
-                        <h3 class="text-xl font-bold mt-4">${skill.name}</h3>
-                        <p class="text-gray-700">${skill.description}</p>
-                        <p class="text-sm text-gray-500 mt-2">Last updated: ${skill.updated_at || 'N/A'}</p>
-                    </div>
-                `;
-                skillsContainer.innerHTML += skillCard;
-            });
-        });
-    }
-
-    // Function to Fetch News
-    function fetchNews() {
-        const newsRef = ref(database, "news");
-        const newsContainer = document.getElementById("news-container");
-
-        onValue(newsRef, (snapshot) => {
-            newsContainer.innerHTML = "";
-            snapshot.forEach((childSnapshot) => {
-                const news = childSnapshot.val();
-                const newsCard = `
-                    <div class="bg-white shadow-md p-6 rounded-lg hover:shadow-xl transition">
-                        <img src="${news.image}" class="w-full h-60 object-cover rounded-lg" alt="${news.title}">
-                        <h3 class="text-xl font-bold mt-4">${news.title}</h3>
-                        <p class="text-gray-700">${news.description}</p>
-                        <p class="text-sm text-gray-500 mt-2">Last updated: ${news.updated_at || 'N/A'}</p>
-                    </div>
-                `;
-                newsContainer.innerHTML += newsCard;
-            });
-        });
-    }
-
-    // Fetch data when the page loads
-    window.onload = function () {
-        fetchSkills();
-        fetchNews();
-    };
-</script>
-
 </head>
 <body class="bg-gray-50 text-gray-900">
 
     <!-- Header -->
-    <header class="bg-gradient-to-r from-blue-800 to-blue-500 text-white py-6 shadow-md">
-        <div class="container mx-auto flex flex-col items-center text-center">
-            <h1 class="text-4xl font-extrabold uppercase tracking-wide">Alfajiri Academy Malaba</h1>
-        </div>
+     <header class="bg-gradient-to-r from-blue-800 to-blue-500 text-white py-6 shadow-lg text-center relative">
+        <div class="absolute inset-0 bg-black bg-opacity-30 rounded-lg"></div>
+        <h1 class="relative text-3xl sm:text-5xl font-extrabold uppercase tracking-wider drop-shadow-lg">Alfajiri Academy Malaba</h1>
+        <p class="relative text-sm sm:text-lg mt-2 text-gray-200">Nurturing Excellence, Inspiring Success</p>
     </header>
 
     <!-- Navigation -->
-    <nav class="bg-white shadow-lg sticky top-0 z-50">
+     <nav class="bg-white shadow-lg sticky top-0 z-50">
         <div class="container mx-auto flex justify-between items-center py-4 px-6">
             <div class="hidden md:flex space-x-6 text-gray-700 font-medium">
                 <a href="index.html" class="hover:text-blue-600 transition">Home</a>
@@ -107,26 +37,31 @@
                 <a href="academics.html" class="hover:text-blue-600 transition">Academics</a>
                 <a href="contact.html" class="hover:text-blue-600 transition">Contact</a>
             </div>
-            <button id="menu-btn" class="md:hidden text-blue-600 text-2xl">☰</button>
+           <button id="menu-btn" class="md:hidden flex items-center text-blue-600 text-2xl focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 6h18M3 12h18M3 18h18" />
+                </svg>
+            </button>
         </div>
         <div id="menu" class="hidden md:hidden bg-white text-center p-4 shadow-md">
             <a href="index.html" class="block py-2 hover:text-blue-600">Home</a>
             <a href="about.html" class="block py-2 hover:text-blue-600">About</a>
             <a href="admissions.html" class="block py-2 hover:text-blue-600">Admissions</a>
             <a href="academics.html" class="block py-2 hover:text-blue-600">Academics</a>
+            <a href="dev.html" class="block py-2 hover:text-blue-600">Developers Account</a>
             <a href="contact.html" class="block py-2 hover:text-blue-600">Contact</a>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section class="relative h-[500px] flex items-center justify-center bg-cover bg-center text-white text-4xl font-bold" style="background-image: url('images/school-banner.jpg');">
+    <section class="relative h-[500px] flex items-center justify-center bg-cover bg-center text-white text-4xl font-bold" style="background-image: url('img2.JPEG');">
         <div class="absolute inset-0 bg-black bg-opacity-60"></div>
         <h2 class="relative text-center px-4">Welcome to Alfajiri Academy Malaba</h2>
     </section>
 
     <!-- Skills Section -->
     <section class="container mx-auto py-12">
-        <h2 class="text-3xl font-bold text-blue-600 text-center mb-6">Our Skills Training</h2>
+        <h2 class="text-3xl font-bold text-blue-600 text-center mb-6">Skills Offered</h2>
         <div id="skills-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <!-- Skills will be fetched dynamically -->
         </div>
@@ -151,11 +86,72 @@
         </div>
     </footer>
 
-    <!-- JavaScript for Menu Toggle -->
-    <script>
-        document.getElementById("menu-btn").addEventListener("click", function() {
-            document.getElementById("menu").classList.toggle("hidden");
+    <!-- Firebase SDK -->
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+     const firebaseConfig = {
+        apiKey: "AIzaSyD...",
+        authDomain: "alfajiri-database.firebaseapp.com",
+        databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
+        projectId: "alfajiri-database",
+        storageBucket: "alfajiri-database.appspot.com",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    document.getElementById("menu-btn").addEventListener("click", function () {
+        const menu = document.getElementById("menu");
+        menu.classList.toggle("hidden");
+    });
+
+    function fetchSkills() {
+        const skillsRef = ref(database, "skills");
+        const skillsContainer = document.getElementById("skills-container");
+
+        onValue(skillsRef, (snapshot) => {
+            skillsContainer.innerHTML = "";
+            snapshot.forEach((childSnapshot) => {
+                const skill = childSnapshot.val();
+                const skillCard = `
+                    <div class="bg-white shadow-md p-6 rounded-lg hover:shadow-xl transition">
+                        <img src="${skill.image}" class="w-full h-60 object-cover rounded-lg" alt="${skill.name}">
+                        <h3 class="text-xl font-bold mt-4">${skill.name}</h3>
+                        <p class="text-gray-700">${skill.description}</p>
+                        <p class="text-sm text-gray-500 mt-2">Last updated: ${skill.updated_at || 'N/A'}</p>
+                    </div>
+                `;
+                skillsContainer.innerHTML += skillCard;
+            });
         });
+    }
+
+    function fetchNews() {
+        const newsRef = ref(database, "news");
+        const newsContainer = document.getElementById("news-container");
+
+        onValue(newsRef, (snapshot) => {
+            newsContainer.innerHTML = "";
+            snapshot.forEach((childSnapshot) => {
+                const news = childSnapshot.val();
+                const newsCard = `
+                    <div class="bg-white shadow-md p-6 rounded-lg hover:shadow-xl transition">
+                        <img src="${news.image}" class="w-full h-60 object-cover rounded-lg" alt="${news.title}">
+                        <h3 class="text-xl font-bold mt-4">${news.title}</h3>
+                        <p class="text-gray-700">${news.description}</p>
+                        <p class="text-sm text-gray-500 mt-2">Last updated: ${news.updated_at || 'N/A'}</p>
+                    </div>
+                `;
+                newsContainer.innerHTML += newsCard;
+            });
+        });
+    }
+
+    window.onload = function () {
+        fetchSkills();
+        fetchNews();
+    };
     </script>
 </body>
 </html>
