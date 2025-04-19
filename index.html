@@ -18,25 +18,14 @@
     }
     button { background: #2c3e50; color: white; }
     button:hover { background: #34495e; cursor: pointer; }
-    .hidden { display: none; }
   </style>
 </head>
 <body>
   <h1>🏨 GuestEase - Hotel Management</h1>
 
-  <!-- AUTH -->
-  <div class="section" id="authSection">
-    <h2>Login / Register</h2>
-    <input type="email" id="email" placeholder="Email" />
-    <input type="password" id="password" placeholder="Password" />
-    <button id="registerBtn">Register</button>
-    <button id="loginBtn">Login</button>
-  </div>
-
   <!-- DASHBOARD -->
-  <div class="section hidden" id="dashboard">
-    <h2>Welcome: <span id="userEmail"></span></h2>
-    <p>Subscription: <strong><span id="subscriptionLevel">free</span></strong></p>
+  <div class="section" id="dashboard">
+    <h2>Admin Dashboard</h2>
     <button id="logoutBtn" style="background:#e74c3c;">Logout</button>
 
     <!-- ROOMS -->
@@ -65,73 +54,35 @@
   <!-- FIREBASE + JS -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-    import { getDatabase, ref, set, push, onValue, get, update } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+    import { getDatabase, ref, set, push, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-      const firebaseConfig = {
-        apiKey: "AIzaSyD...",
-        authDomain: "alfajiri-database.firebaseapp.com",
-        databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
-        projectId: "alfajiri-database",
-        storageBucket: "alfajiri-database.appspot.com",
+    const firebaseConfig = {
+      apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
+      authDomain: "alfajiri-database.firebaseapp.com",
+      databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
+      projectId: "alfajiri-database",
+      storageBucket: "alfajiri-database.appspot.com",
+      messagingSenderId: "310417854615",
+      appId: "1:310417854615:web:6f65002a119caeaf9119d2",
+      measurementId: "G-21TBZCRBHM"
     };
-
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
     const db = getDatabase(app);
 
     // UI Elements
-    const authSection = document.getElementById("authSection");
     const dashboard = document.getElementById("dashboard");
-    const userEmail = document.getElementById("userEmail");
-    const subLevel = document.getElementById("subscriptionLevel");
-
     const roomSelect = document.getElementById("roomSelect");
-
-    // Auth Handlers
-    document.getElementById("registerBtn").onclick = () => {
-      createUserWithEmailAndPassword(auth, email.value, password.value).then((cred) => {
-        set(ref(db, "users/" + cred.user.uid), { email: cred.user.email, subscription: "free" });
-      });
-    };
-
-    document.getElementById("loginBtn").onclick = () => {
-      signInWithEmailAndPassword(auth, email.value, password.value).catch(err => alert(err.message));
-    };
-
-    document.getElementById("logoutBtn").onclick = () => signOut(auth);
-
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        showDashboard(user);
-      } else {
-        authSection.classList.remove("hidden");
-        dashboard.classList.add("hidden");
-      }
-    });
-
-    function showDashboard(user) {
-      authSection.classList.add("hidden");
-      dashboard.classList.remove("hidden");
-      userEmail.textContent = user.email;
-
-      get(ref(db, "users/" + user.uid)).then(snapshot => {
-        const data = snapshot.val();
-        subLevel.textContent = data?.subscription || "free";
-      });
-
-      loadRooms();
-    }
 
     // Add Room
     document.getElementById("addRoomBtn").onclick = () => {
-      const name = roomName.value;
-      const price = roomPrice.value;
+      const name = document.getElementById("roomName").value;
+      const price = document.getElementById("roomPrice").value;
       if (!name || !price) return alert("Fill in both fields");
       const roomRef = push(ref(db, "rooms/"));
       set(roomRef, { name, price });
       alert("Room added");
-      roomName.value = ""; roomPrice.value = "";
+      document.getElementById("roomName").value = "";
+      document.getElementById("roomPrice").value = "";
       loadRooms();
     };
 
@@ -149,11 +100,10 @@
 
     // Pay & Book
     document.getElementById("payAndBookBtn").onclick = () => {
-      const phone = phoneNumber.value.trim();
-      const amount = Number(paymentAmount.value.trim());
-      const date = reserveDate.value;
+      const phone = document.getElementById("phoneNumber").value.trim();
+      const amount = Number(document.getElementById("paymentAmount").value.trim());
+      const date = document.getElementById("reserveDate").value;
       const roomId = roomSelect.value;
-      const user = auth.currentUser;
 
       if (!phone.startsWith("07") || !amount || !date || !roomId) {
         return alert("Please complete all booking details correctly.");
@@ -175,14 +125,14 @@
       .then(data => {
         if (data.success) {
           alert("Payment prompt sent. Confirm on your phone.");
-          pollBookingStatus(data.transaction_id, user.uid, roomId, date);
+          pollBookingStatus(data.transaction_id, roomId, date);
         } else {
           alert("Failed to initiate payment.");
         }
       });
     };
 
-    function pollBookingStatus(txnId, uid, roomId, date, attempt = 0) {
+    function pollBookingStatus(txnId, roomId, date, attempt = 0) {
       if (attempt >= 12) return alert("Payment not confirmed in time.");
       setTimeout(() => {
         fetch(`https://payhero.co.ke/api/transaction/${txnId}`)
@@ -191,18 +141,22 @@
             if (data.status === "success") {
               const bookingRef = push(ref(db, "bookings/"));
               set(bookingRef, {
-                uid,
                 roomId,
                 date,
                 status: "confirmed"
               });
               alert("Booking successful!");
             } else {
-              pollBookingStatus(txnId, uid, roomId, date, attempt + 1);
+              pollBookingStatus(txnId, roomId, date, attempt + 1);
             }
           });
       }, 5000);
     }
-  </script>
-</body>
-</html>
+
+    // Logout (Admin only)
+    document.getElementById("logoutBtn").onclick = () => {
+      alert("Logged out successfully.");
+      // Optionally
+::contentReference[oaicite:0]{index=0}
+
+    
