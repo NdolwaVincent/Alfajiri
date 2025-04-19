@@ -1,157 +1,207 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alfajiri Academy Malaba</title>
-
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <style>
-        body {
-            font-family: 'Times New Roman', sans-serif;
-            font-size: 15px;
-        }
-        html {
-            scroll-behavior: smooth;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GuestEase - Hotel System</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
+    h1, h2 { color: #2c3e50; }
+    .section {
+      margin: 20px 0; background: white;
+      padding: 20px; border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input, select, button {
+      margin: 10px 0; padding: 10px; width: 100%; max-width: 400px;
+      border: 1px solid #ccc; border-radius: 5px;
+    }
+    button { background: #2c3e50; color: white; }
+    button:hover { background: #34495e; cursor: pointer; }
+    .hidden { display: none; }
+  </style>
 </head>
-<body class="bg-gray-50 text-gray-900">
+<body>
+  <h1>🏨 GuestEase - Hotel Management</h1>
 
-    <!-- Header -->
-     <header class="bg-gradient-to-r from-blue-800 to-blue-500 text-white py-6 shadow-lg text-center relative">
-        <div class="absolute inset-0 bg-black bg-opacity-30 rounded-lg"></div>
-        <h1 class="relative text-3xl sm:text-5xl font-extrabold uppercase tracking-wider drop-shadow-lg">Alfajiri Academy Malaba</h1>
-        <p class="relative text-sm sm:text-lg mt-2 text-gray-200">Nurturing Excellence, Inspiring Success</p>
-    </header>
+  <!-- AUTH -->
+  <div class="section" id="authSection">
+    <h2>Login / Register</h2>
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+    <button id="registerBtn">Register</button>
+    <button id="loginBtn">Login</button>
+  </div>
 
-    <!-- Navigation -->
-     <nav class="bg-white shadow-lg sticky top-0 z-50">
-        <div class="container mx-auto flex justify-between items-center py-4 px-6">
-            <div class="hidden md:flex space-x-6 text-gray-700 font-medium">
-                <a href="index.html" class="hover:text-blue-600 transition">Home</a>
-                <a href="about.html" class="hover:text-blue-600 transition">About</a>
-                <a href="admissions.html" class="hover:text-blue-600 transition">Admissions</a>
-                <a href="academics.html" class="hover:text-blue-600 transition">Academics</a>
-                <a href="contact.html" class="hover:text-blue-600 transition">Contact</a>
-            </div>
-           <button id="menu-btn" class="md:hidden flex items-center text-blue-600 text-2xl focus:outline-none">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M3 6h18M3 12h18M3 18h18" />
-                </svg>
-            </button>
-        </div>
-        <div id="menu" class="hidden md:hidden bg-white text-center p-4 shadow-md">
-            <a href="index.html" class="block py-2 hover:text-blue-600">Home</a>
-            <a href="about.html" class="block py-2 hover:text-blue-600">About</a>
-            <a href="admissions.html" class="block py-2 hover:text-blue-600">Admissions</a>
-            <a href="academics.html" class="block py-2 hover:text-blue-600">Academics</a>
-            <a href="dev.html" class="block py-2 hover:text-blue-600">Developers Account</a>
-            <a href="contact.html" class="block py-2 hover:text-blue-600">Contact</a>
-        </div>
-    </nav>
+  <!-- DASHBOARD -->
+  <div class="section hidden" id="dashboard">
+    <h2>Welcome: <span id="userEmail"></span></h2>
+    <p>Subscription: <strong><span id="subscriptionLevel">free</span></strong></p>
+    <button id="logoutBtn" style="background:#e74c3c;">Logout</button>
 
-    <!-- Hero Section -->
-    <section class="relative h-[500px] flex items-center justify-center bg-cover bg-center text-white text-4xl font-bold" style="background-image: url('img2.JPEG');">
-        <div class="absolute inset-0 bg-black bg-opacity-60"></div>
-        <h2 class="relative text-center px-4">Welcome to Alfajiri Academy Malaba</h2>
-    </section>
+    <!-- ROOMS -->
+    <div class="section">
+      <h3>🏠 Add Room</h3>
+      <input type="text" id="roomName" placeholder="Room Name" />
+      <input type="number" id="roomPrice" placeholder="Price per Night" />
+      <button id="addRoomBtn">Add Room</button>
+    </div>
 
-    <!-- Skills Section -->
-    <section class="container mx-auto py-12">
-        <h2 class="text-3xl font-bold text-blue-600 text-center mb-6">Skills Offered</h2>
-        <div id="skills-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Skills will be fetched dynamically -->
-        </div>
-    </section>
+    <div class="section">
+      <h3>📋 Available Rooms</h3>
+      <select id="roomSelect"></select>
+    </div>
 
-    <!-- News Section -->
-    <section class="container mx-auto py-12">
-        <h2 class="text-3xl font-bold text-blue-600 text-center mb-6">Latest News & Updates</h2>
-        <div id="news-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- News will be fetched dynamically -->
-        </div>
-    </section>
+    <!-- RESERVATION -->
+    <div class="section">
+      <h3>📅 Reserve a Room</h3>
+      <input type="date" id="reserveDate" />
+      <input type="tel" id="phoneNumber" placeholder="M-Pesa Phone (07xx...)" />
+      <input type="number" id="paymentAmount" placeholder="Enter Amount (e.g. 1000)" />
+      <button id="payAndBookBtn">Pay & Book via Payhero</button>
+    </div>
+  </div>
 
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white text-center p-6 mt-12">
-        <p>&copy; 2025 Alfajiri Academy Malaba. All rights reserved.</p>
-        <div class="flex justify-center space-x-6 mt-4">
-            <a href="#" class="hover:text-gray-400">📘 Facebook</a>
-            <a href="#" class="hover:text-gray-400">🐦 Twitter</a>
-            <a href="#" class="hover:text-gray-400">📸 Instagram</a>
-            <a href="#" class="hover:text-gray-400">💼 LinkedIn</a>
-        </div>
-    </footer>
+  <!-- FIREBASE + JS -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+    import { getDatabase, ref, set, push, onValue, get, update } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-    <!-- Firebase SDK -->
-    <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-
-     const firebaseConfig = {
+    const firebaseConfig = {
         apiKey: "AIzaSyD...",
         authDomain: "alfajiri-database.firebaseapp.com",
         databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
         projectId: "alfajiri-database",
         storageBucket: "alfajiri-database.appspot.com",
     };
-
     const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
-    document.getElementById("menu-btn").addEventListener("click", function () {
-        const menu = document.getElementById("menu");
-        menu.classList.toggle("hidden");
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    // UI Elements
+    const authSection = document.getElementById("authSection");
+    const dashboard = document.getElementById("dashboard");
+    const userEmail = document.getElementById("userEmail");
+    const subLevel = document.getElementById("subscriptionLevel");
+
+    const roomSelect = document.getElementById("roomSelect");
+
+    // Auth Handlers
+    document.getElementById("registerBtn").onclick = () => {
+      createUserWithEmailAndPassword(auth, email.value, password.value).then((cred) => {
+        set(ref(db, "users/" + cred.user.uid), { email: cred.user.email, subscription: "free" });
+      });
+    };
+
+    document.getElementById("loginBtn").onclick = () => {
+      signInWithEmailAndPassword(auth, email.value, password.value).catch(err => alert(err.message));
+    };
+
+    document.getElementById("logoutBtn").onclick = () => signOut(auth);
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        showDashboard(user);
+      } else {
+        authSection.classList.remove("hidden");
+        dashboard.classList.add("hidden");
+      }
     });
 
-    function fetchSkills() {
-        const skillsRef = ref(database, "skills");
-        const skillsContainer = document.getElementById("skills-container");
+    function showDashboard(user) {
+      authSection.classList.add("hidden");
+      dashboard.classList.remove("hidden");
+      userEmail.textContent = user.email;
 
-        onValue(skillsRef, (snapshot) => {
-            skillsContainer.innerHTML = "";
-            snapshot.forEach((childSnapshot) => {
-                const skill = childSnapshot.val();
-                const skillCard = `
-                    <div class="bg-white shadow-md p-6 rounded-lg hover:shadow-xl transition">
-                        <img src="${skill.image}" class="w-full h-60 object-cover rounded-lg" alt="${skill.name}">
-                        <h3 class="text-xl font-bold mt-4">${skill.name}</h3>
-                        <p class="text-gray-700">${skill.description}</p>
-                        <p class="text-sm text-gray-500 mt-2">Last updated: ${skill.updated_at || 'N/A'}</p>
-                    </div>
-                `;
-                skillsContainer.innerHTML += skillCard;
-            });
-        });
+      get(ref(db, "users/" + user.uid)).then(snapshot => {
+        const data = snapshot.val();
+        subLevel.textContent = data?.subscription || "free";
+      });
+
+      loadRooms();
     }
 
-    function fetchNews() {
-        const newsRef = ref(database, "news");
-        const newsContainer = document.getElementById("news-container");
-
-        onValue(newsRef, (snapshot) => {
-            newsContainer.innerHTML = "";
-            snapshot.forEach((childSnapshot) => {
-                const news = childSnapshot.val();
-                const newsCard = `
-                    <div class="bg-white shadow-md p-6 rounded-lg hover:shadow-xl transition">
-                        <img src="${news.image}" class="w-full h-60 object-cover rounded-lg" alt="${news.title}">
-                        <h3 class="text-xl font-bold mt-4">${news.title}</h3>
-                        <p class="text-gray-700">${news.description}</p>
-                        <p class="text-sm text-gray-500 mt-2">Last updated: ${news.updated_at || 'N/A'}</p>
-                    </div>
-                `;
-                newsContainer.innerHTML += newsCard;
-            });
-        });
-    }
-
-    window.onload = function () {
-        fetchSkills();
-        fetchNews();
+    // Add Room
+    document.getElementById("addRoomBtn").onclick = () => {
+      const name = roomName.value;
+      const price = roomPrice.value;
+      if (!name || !price) return alert("Fill in both fields");
+      const roomRef = push(ref(db, "rooms/"));
+      set(roomRef, { name, price });
+      alert("Room added");
+      roomName.value = ""; roomPrice.value = "";
+      loadRooms();
     };
-    </script>
+
+    function loadRooms() {
+      onValue(ref(db, "rooms/"), (snapshot) => {
+        roomSelect.innerHTML = "";
+        snapshot.forEach(child => {
+          const opt = document.createElement("option");
+          opt.value = child.key;
+          opt.textContent = `${child.val().name} - Ksh ${child.val().price}`;
+          roomSelect.appendChild(opt);
+        });
+      });
+    }
+
+    // Pay & Book
+    document.getElementById("payAndBookBtn").onclick = () => {
+      const phone = phoneNumber.value.trim();
+      const amount = Number(paymentAmount.value.trim());
+      const date = reserveDate.value;
+      const roomId = roomSelect.value;
+      const user = auth.currentUser;
+
+      if (!phone.startsWith("07") || !amount || !date || !roomId) {
+        return alert("Please complete all booking details correctly.");
+      }
+
+      const payData = {
+        phone,
+        amount,
+        till: "ihc1HJZ5yL4v9cHVzdKo",
+        description: "Room Booking"
+      };
+
+      fetch("https://payhero.co.ke/api/transaction", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payData)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert("Payment prompt sent. Confirm on your phone.");
+          pollBookingStatus(data.transaction_id, user.uid, roomId, date);
+        } else {
+          alert("Failed to initiate payment.");
+        }
+      });
+    };
+
+    function pollBookingStatus(txnId, uid, roomId, date, attempt = 0) {
+      if (attempt >= 12) return alert("Payment not confirmed in time.");
+      setTimeout(() => {
+        fetch(`https://payhero.co.ke/api/transaction/${txnId}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.status === "success") {
+              const bookingRef = push(ref(db, "bookings/"));
+              set(bookingRef, {
+                uid,
+                roomId,
+                date,
+                status: "confirmed"
+              });
+              alert("Booking successful!");
+            } else {
+              pollBookingStatus(txnId, uid, roomId, date, attempt + 1);
+            }
+          });
+      }, 5000);
+    }
+  </script>
 </body>
 </html>
