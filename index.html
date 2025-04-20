@@ -3,160 +3,340 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>GuestEase - Hotel System</title>
+  <title>Admin - Student Management</title>
   <style>
-    body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
-    h1, h2 { color: #2c3e50; }
-    .section {
-      margin: 20px 0; background: white;
-      padding: 20px; border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    :root {
+      --primary: #1e88e5;
+      --light: #f4f7f9;
+      --dark: #333;
+      --white: #fff;
+      --gray: #ccc;
+      --success: #4caf50;
+      --danger: #e53935;
     }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--light);
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: var(--white);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    h1, h2 {
+      text-align: center;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+    }
+
     input, select, button {
-      margin: 10px 0; padding: 10px; width: 100%; max-width: 400px;
-      border: 1px solid #ccc; border-radius: 5px;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid var(--gray);
     }
-    button { background: #2c3e50; color: white; }
-    button:hover { background: #34495e; cursor: pointer; }
+
+    button {
+      background: var(--primary);
+      color: var(--white);
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1565c0;
+    }
+
+    #searchStudent {
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid var(--gray);
+    }
+
+    td button {
+      padding: 4px 8px;
+      margin: 0 2px;
+    }
+
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 12px 20px;
+      border-radius: 5px;
+      color: #fff;
+      font-size: 14px;
+      z-index: 9999;
+      display: none;
+    }
+
+    .toast.success { background-color: var(--success); }
+    .toast.error { background-color: var(--danger); }
+
+    #editModal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 100vw;
+      display: none;
+      background: rgba(0, 0, 0, 0.4);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    #editModal .modal-content {
+      background: var(--white);
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+    }
+
+    @media (max-width: 600px) {
+      form {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
-  <h1>🏨 GuestEase - Hotel Management</h1>
+<div class="container">
+  <h1>Student Management (Admin)</h1>
 
-  <!-- DASHBOARD -->
-  <div class="section" id="dashboard">
-    <h2>Admin Dashboard</h2>
-    <button id="logoutBtn" style="background:#e74c3c;">Logout</button>
-
-    <!-- ROOMS -->
-    <div class="section">
-      <h3>🏠 Add Room</h3>
-      <input type="text" id="roomName" placeholder="Room Name" />
-      <input type="number" id="roomPrice" placeholder="Price per Night" />
-      <button id="addRoomBtn">Add Room</button>
-    </div>
-
-    <div class="section">
-      <h3>📋 Available Rooms</h3>
-      <select id="roomSelect"></select>
-    </div>
-
-    <!-- RESERVATION -->
-    <div class="section">
-      <h3>📅 Reserve a Room</h3>
-      <input type="date" id="reserveDate" />
-      <input type="tel" id="phoneNumber" placeholder="M-Pesa Phone (07xx...)" />
-      <input type="number" id="paymentAmount" placeholder="Enter Amount (e.g. 1000)" />
-      <button id="payAndBookBtn">Pay & Book via Payhero</button>
-    </div>
+  <div class="card">
+    <h2 id="formTitle">Add New Student</h2>
+    <form id="studentForm">
+      <input type="text" id="adm" placeholder="Admission Number" required />
+      <input type="text" id="fullName" placeholder="Full Name" required />
+      <select id="grade" required>
+        <option value="">Select Grade</option>
+        <option>Play Group</option><option>PP 1</option><option>PP 2</option>
+        <option>Grade 1</option><option>Grade 2</option><option>Grade 3</option>
+        <option>Grade 4</option><option>Grade 5</option><option>Grade 6</option>
+        <option>Grade 7</option><option>Grade 8</option><option>Grade 9</option>
+      </select>
+      <input type="date" id="dob" required />
+      <input type="text" id="parentName" placeholder="Parent Name" required />
+      <input type="text" id="parentPhone" placeholder="Parent Phone" required />
+      <input type="date" id="admissionDate" required />
+      <select id="status" required>
+        <option value="">Select Status</option>
+        <option>Active</option><option>Inactive</option><option>Graduated</option>
+      </select>
+      <button type="submit" id="submitBtn">Add Student</button>
+    </form>
   </div>
 
-  <!-- FIREBASE + JS -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getDatabase, ref, set, push, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+  <div class="card">
+    <h2>All Students</h2>
+    <input type="text" id="searchStudent" placeholder="Search by name or adm..." />
+    <table>
+      <thead>
+      <tr>
+        <th>Adm</th><th>Name</th><th>Grade</th><th>DOB</th><th>Age</th>
+        <th>Parent</th><th>Phone</th><th>Status</th><th>Actions</th>
+      </tr>
+      </thead>
+      <tbody id="studentTable"></tbody>
+    </table>
+  </div>
+</div>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
-      authDomain: "alfajiri-database.firebaseapp.com",
-      databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
-      projectId: "alfajiri-database",
-      storageBucket: "alfajiri-database.appspot.com",
-      messagingSenderId: "310417854615",
-      appId: "1:310417854615:web:6f65002a119caeaf9119d2",
-      measurementId: "G-21TBZCRBHM"
-    };
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+<!-- Toast Notification -->
+<div id="toast" class="toast"></div>
 
-    // UI Elements
-    const dashboard = document.getElementById("dashboard");
-    const roomSelect = document.getElementById("roomSelect");
+<!-- Edit Confirmation Modal -->
+<div id="editModal">
+  <div class="modal-content">
+    <p>Are you sure you want to update this student’s record?</p>
+    <button id="confirmEdit" style="background:green;">Yes, Update</button>
+    <button id="cancelEdit" style="background:red;">Cancel</button>
+  </div>
+</div>
 
-    // Add Room
-    document.getElementById("addRoomBtn").onclick = () => {
-      const name = document.getElementById("roomName").value;
-      const price = document.getElementById("roomPrice").value;
-      if (!name || !price) return alert("Fill in both fields");
-      const roomRef = push(ref(db, "rooms/"));
-      set(roomRef, { name, price });
-      alert("Room added");
-      document.getElementById("roomName").value = "";
-      document.getElementById("roomPrice").value = "";
-      loadRooms();
-    };
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+  import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
-    function loadRooms() {
-      onValue(ref(db, "rooms/"), (snapshot) => {
-        roomSelect.innerHTML = "";
-        snapshot.forEach(child => {
-          const opt = document.createElement("option");
-          opt.value = child.key;
-          opt.textContent = `${child.val().name} - Ksh ${child.val().price}`;
-          roomSelect.appendChild(opt);
-        });
-      });
+  const firebaseConfig = {
+    apiKey: "AIzaSyD...", // Replace with yours
+    authDomain: "alfajiri-database.firebaseapp.com",
+    databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
+    projectId: "alfajiri-database",
+    storageBucket: "alfajiri-database.appspot.com"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  const studentForm = document.getElementById("studentForm");
+  const studentTable = document.getElementById("studentTable");
+  const toast = document.getElementById("toast");
+  const modal = document.getElementById("editModal");
+  const confirmEditBtn = document.getElementById("confirmEdit");
+  const cancelEditBtn = document.getElementById("cancelEdit");
+
+  let allStudents = {};
+  let editingStudent = null;
+
+  const calculateAge = (dob) => {
+    const birth = new Date(dob);
+    const now = new Date();
+    let age = now.getFullYear() - birth.getFullYear();
+    if (now < new Date(now.getFullYear(), birth.getMonth(), birth.getDate())) age--;
+    return age;
+  };
+
+  const showToast = (message, type = "success") => {
+    toast.textContent = message;
+    toast.className = `toast ${type}`;
+    toast.style.display = "block";
+    setTimeout(() => { toast.style.display = "none"; }, 3000);
+  };
+
+  const renderStudents = () => {
+    studentTable.innerHTML = "";
+    for (let adm in allStudents) {
+      const s = allStudents[adm];
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${adm}</td>
+        <td>${s.name}</td>
+        <td>${s.grade}</td>
+        <td>${s.dob}</td>
+        <td>${s.age}</td>
+        <td>${s.parent}</td>
+        <td>${s.phone}</td>
+        <td>${s.status}</td>
+        <td>
+          <button onclick="editStudent('${adm}')">Edit</button>
+          <button onclick="deleteStudent('${adm}')">Delete</button>
+        </td>
+      `;
+      studentTable.appendChild(tr);
     }
+  };
 
-    // Pay & Book
-    document.getElementById("payAndBookBtn").onclick = () => {
-      const phone = document.getElementById("phoneNumber").value.trim();
-      const amount = Number(document.getElementById("paymentAmount").value.trim());
-      const date = document.getElementById("reserveDate").value;
-      const roomId = roomSelect.value;
+  onValue(ref(db, "ERPManagement/Schools/Alfajiri/Students"), (snapshot) => {
+    allStudents = snapshot.val() || {};
+    renderStudents();
+  });
 
-      if (!phone.startsWith("07") || !amount || !date || !roomId) {
-        return alert("Please complete all booking details correctly.");
-      }
+  studentForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const adm = document.getElementById("adm").value.trim();
+    const name = document.getElementById("fullName").value.trim();
+    const grade = document.getElementById("grade").value;
+    const dob = document.getElementById("dob").value;
+    const parent = document.getElementById("parentName").value.trim();
+    const phone = document.getElementById("parentPhone").value.trim();
+    const admission = document.getElementById("admissionDate").value;
+    const status = document.getElementById("status").value;
+    const age = calculateAge(dob);
 
-      const payData = {
-        phone,
-        amount,
-        till: "ihc1HJZ5yL4v9cHVzdKo",
-        description: "Room Booking"
+    const student = { adm, name, grade, dob, age, parent, phone, admission, status };
+
+    if (editingStudent) {
+      modal.style.display = "flex";
+      confirmEditBtn.onclick = () => {
+        set(ref(db, `ERPManagement/Schools/Alfajiri/Students/${editingStudent}`), student);
+        showToast("Student updated successfully!");
+        modal.style.display = "none";
+        editingStudent = null;
+        studentForm.reset();
       };
-
-      fetch("https://payhero.co.ke/api/transaction", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payData)
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          alert("Payment prompt sent. Confirm on your phone.");
-          pollBookingStatus(data.transaction_id, roomId, date);
-        } else {
-          alert("Failed to initiate payment.");
-        }
-      });
-    };
-
-    function pollBookingStatus(txnId, roomId, date, attempt = 0) {
-      if (attempt >= 12) return alert("Payment not confirmed in time.");
-      setTimeout(() => {
-        fetch(`https://payhero.co.ke/api/transaction/${txnId}`)
-          .then(res => res.json())
-          .then(data => {
-            if (data.status === "success") {
-              const bookingRef = push(ref(db, "bookings/"));
-              set(bookingRef, {
-                roomId,
-                date,
-                status: "confirmed"
-              });
-              alert("Booking successful!");
-            } else {
-              pollBookingStatus(txnId, roomId, date, attempt + 1);
-            }
-          });
-      }, 5000);
+      cancelEditBtn.onclick = () => {
+        modal.style.display = "none";
+      };
+    } else {
+      set(ref(db, `ERPManagement/Schools/Alfajiri/Students/${adm}`), student)
+        .then(() => {
+          showToast("Student added successfully!");
+          studentForm.reset();
+        });
     }
+  });
 
-    // Logout (Admin only)
-    document.getElementById("logoutBtn").onclick = () => {
-      alert("Logged out successfully.");
-      // Optionally
-::contentReference[oaicite:0]{index=0}
+  window.editStudent = (adm) => {
+    const s = allStudents[adm];
+    document.getElementById("adm").value = adm;
+    document.getElementById("fullName").value = s.name;
+    document.getElementById("grade").value = s.grade;
+    document.getElementById("dob").value = s.dob;
+    document.getElementById("parentName").value = s.parent;
+    document.getElementById("parentPhone").value = s.phone;
+    document.getElementById("admissionDate").value = s.admission;
+    document.getElementById("status").value = s.status;
+    editingStudent = adm;
+  };
 
-    
+  window.deleteStudent = (adm) => {
+    if (confirm("Delete this student?")) {
+      remove(ref(db, `ERPManagement/Schools/Alfajiri/Students/${adm}`));
+      showToast("Student deleted successfully!", "error");
+    }
+  };
+
+  document.getElementById("searchStudent").addEventListener("input", (e) => {
+    const term = e.target.value.toLowerCase();
+    const filtered = {};
+    for (let adm in allStudents) {
+      const s = allStudents[adm];
+      if (adm.toLowerCase().includes(term) || s.name.toLowerCase().includes(term)) {
+        filtered[adm] = s;
+      }
+    }
+    studentTable.innerHTML = "";
+    for (let adm in filtered) {
+      const s = filtered[adm];
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${adm}</td>
+        <td>${s.name}</td>
+        <td>${s.grade}</td>
+        <td>${s.dob}</td>
+        <td>${s.age}</td>
+        <td>${s.parent}</td>
+        <td>${s.phone}</td>
+        <td>${s.status}</td>
+        <td>
+          <button onclick="editStudent('${adm}')">Edit</button>
+          <button onclick="deleteStudent('${adm}')">Delete</button>
+        </td>
+      `;
+      studentTable.appendChild(tr);
+    }
+  });
+</script>
+</body>
+</html>
