@@ -2,341 +2,206 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin - Student Management</title>
-  <style>
-    :root {
-      --primary: #1e88e5;
-      --light: #f4f7f9;
-      --dark: #333;
-      --white: #fff;
-      --gray: #ccc;
-      --success: #4caf50;
-      --danger: #e53935;
-    }
-
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: var(--light);
-      margin: 0;
-      padding: 0;
-    }
-
-    .container {
-      max-width: 1000px;
-      margin: auto;
-      padding: 20px;
-    }
-
-    .card {
-      background: var(--white);
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-    }
-
-    h1, h2 {
-      text-align: center;
-    }
-
-    form {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 10px;
-    }
-
-    input, select, button {
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 6px;
-      border: 1px solid var(--gray);
-    }
-
-    button {
-      background: var(--primary);
-      color: var(--white);
-      border: none;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #1565c0;
-    }
-
-    #searchStudent {
-      width: 100%;
-      margin-top: 10px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
-    }
-
-    th, td {
-      padding: 10px;
-      border-bottom: 1px solid var(--gray);
-    }
-
-    td button {
-      padding: 4px 8px;
-      margin: 0 2px;
-    }
-
-    .toast {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      padding: 12px 20px;
-      border-radius: 5px;
-      color: #fff;
-      font-size: 14px;
-      z-index: 9999;
-      display: none;
-    }
-
-    .toast.success { background-color: var(--success); }
-    .toast.error { background-color: var(--danger); }
-
-    #editModal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 100vh;
-      width: 100vw;
-      display: none;
-      background: rgba(0, 0, 0, 0.4);
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-
-    #editModal .modal-content {
-      background: var(--white);
-      padding: 20px;
-      border-radius: 10px;
-      max-width: 400px;
-      width: 90%;
-      text-align: center;
-    }
-
-    @media (max-width: 600px) {
-      form {
-        grid-template-columns: 1fr;
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>School ERP Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#2563EB',
+            secondary: '#1E3A8A',
+            accent: '#F59E0B'
+          }
+        }
       }
+    }
+  </script>
+  <style>
+    .submenu { display: none; }
+    .submenu.open { display: block; }
+    .fade-section {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.4s ease-in-out;
+    }
+    .fade-section.active {
+      display: block;
+      opacity: 1;
     }
   </style>
 </head>
-<body>
-<div class="container">
-  <h1>Student Management (Admin)</h1>
+<body class="bg-gray-100 text-gray-800">
 
-  <div class="card">
-    <h2 id="formTitle">Add New Student</h2>
-    <form id="studentForm">
-      <input type="text" id="adm" placeholder="Admission Number" required />
-      <input type="text" id="fullName" placeholder="Full Name" required />
-      <select id="grade" required>
-        <option value="">Select Grade</option>
-        <option>Play Group</option><option>PP 1</option><option>PP 2</option>
-        <option>Grade 1</option><option>Grade 2</option><option>Grade 3</option>
-        <option>Grade 4</option><option>Grade 5</option><option>Grade 6</option>
-        <option>Grade 7</option><option>Grade 8</option><option>Grade 9</option>
-      </select>
-      <input type="date" id="dob" required />
-      <input type="text" id="parentName" placeholder="Parent Name" required />
-      <input type="text" id="parentPhone" placeholder="Parent Phone" required />
-      <input type="date" id="admissionDate" required />
-      <select id="status" required>
-        <option value="">Select Status</option>
-        <option>Active</option><option>Inactive</option><option>Graduated</option>
-      </select>
-      <button type="submit" id="submitBtn">Add Student</button>
-    </form>
+  <!-- Top Navbar -->
+  <header class="bg-white shadow-md p-4 flex justify-between items-center sticky top-0 z-50">
+    <h1 class="text-xl font-bold text-primary flex items-center gap-2">
+      🎓 School ERP
+    </h1>
+    <button id="menuBtn" class="md:hidden bg-primary text-white px-3 py-1 rounded">
+      ☰
+    </button>
+  </header>
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="w-64 bg-white shadow-md p-4 absolute md:relative md:translate-x-0 transform -translate-x-full transition-transform duration-300 ease-in-out z-40 md:z-10 h-screen overflow-y-auto">
+      <nav class="space-y-6 text-sm">
+        <div class="space-y-1">
+          <button onclick="toggleSubmenu('dashboardSub')" class="w-full text-left font-semibold hover:text-primary">📊 Dashboard</button>
+          <div id="dashboardSub" class="submenu ml-4 text-gray-700 space-y-1">
+            <a href="#overview" class="block hover:text-accent">Overview</a>
+            <a href="#summary" class="block hover:text-accent">Summary</a>
+          </div>
+        </div>
+        <div class="space-y-1">
+          <button onclick="toggleSubmenu('studentsSub')" class="w-full text-left font-semibold hover:text-primary">👨‍🎓 Students</button>
+          <div id="studentsSub" class="submenu ml-4 text-gray-700 space-y-1">
+            <a href="#manage-students" class="block hover:text-accent">Manage</a>
+            <a href="#register-student" class="block hover:text-accent">Register</a>
+          </div>
+        </div>
+        <div class="space-y-1">
+          <button onclick="toggleSubmenu('timetableSub')" class="w-full text-left font-semibold hover:text-primary">📅 Timetable</button>
+          <div id="timetableSub" class="submenu ml-4 text-gray-700 space-y-1">
+            <a href="#view-timetable" class="block hover:text-accent">View</a>
+            <a href="#allocate-lessons" class="block hover:text-accent">Allocate Lessons</a>
+            <a href="#weekly-schedule" class="block hover:text-accent">Weekly Schedule</a>
+          </div>
+        </div>
+        <div class="space-y-1">
+          <button onclick="toggleSubmenu('financeSub')" class="w-full text-left font-semibold hover:text-primary">💰 Finance</button>
+          <div id="financeSub" class="submenu ml-4 text-gray-700 space-y-1">
+            <a href="#fees" class="block hover:text-accent">School Fees</a>
+            <a href="#expenses" class="block hover:text-accent">Expenses</a>
+          </div>
+        </div>
+        <div class="space-y-1">
+          <button onclick="toggleSubmenu('staffSub')" class="w-full text-left font-semibold hover:text-primary">👩‍🏫 Staff</button>
+          <div id="staffSub" class="submenu ml-4 text-gray-700 space-y-1">
+            <a href="#teachers" class="block hover:text-accent">Teachers</a>
+            <a href="#non-teaching" class="block hover:text-accent">Non-Teaching</a>
+          </div>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6 md:ml-64">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+        <div class="bg-white border-l-4 border-primary p-4 shadow rounded">
+          <h2 class="text-sm font-semibold text-gray-600">🎓 Total Grades</h2>
+          <p class="text-3xl font-bold">10</p>
+        </div>
+        <div class="bg-white border-l-4 border-primary p-4 shadow rounded">
+          <h2 class="text-sm font-semibold text-gray-600">📅 Timetables</h2>
+          <p class="text-3xl font-bold">50</p>
+        </div>
+        <div class="bg-white border-l-4 border-primary p-4 shadow rounded">
+          <h2 class="text-sm font-semibold text-gray-600">👩‍🏫 Teachers</h2>
+          <p class="text-3xl font-bold">25</p>
+        </div>
+        <div class="bg-white border-l-4 border-primary p-4 shadow rounded">
+          <h2 class="text-sm font-semibold text-gray-600">📚 Subjects</h2>
+          <p class="text-3xl font-bold">35</p>
+        </div>
+      </div>
+
+      <!-- Sections -->
+      <div class="space-y-8">
+        <section id="overview" class="fade-section active">
+          <h3 class="text-xl font-bold text-primary">📊 Dashboard Overview</h3>
+          <p class="text-gray-600">Welcome to the School ERP Dashboard.</p>
+        </section>
+        <section id="summary" class="fade-section">
+          <h3 class="text-xl font-bold text-primary">📈 Summary</h3>
+          <p class="text-gray-600">School performance and stats.</p>
+        </section>
+        <section id="manage-students" class="fade-section">
+          <h3 class="text-xl font-bold text-primary">👨‍🎓 Manage Students</h3>
+          <p class="text-gray-600">Manage student data.</p>
+        </section>
+        <section id="register-student" class="fade-section">
+          <h3 class="text-xl font-bold text-primary">📝 Register Student</h3>
+          <p class="text-gray-600">Add new students.</p>
+        </section>
+        <section id="view-timetable" class="fade-section">
+          <h3 class="text-xl font-bold text-primary">🗓️ View Timetable</h3>
+          <p class="text-gray-600">Weekly class schedule.</p>
+        </section>
+        <section id="allocate-lessons" class="fade-section">
+          <h3 class="text-xl font-bold text-primary">📚 Allocate Lessons</h3>
+          <p class="text-gray-600">Assign lessons to teachers.</p>
+        </section>
+        <section id="weekly-schedule" class="fade-section">
+          <h3 class="text-xl font-bold text-primary">📅 Weekly Schedule</h3>
+          <p class="text-gray-600">Timetable overview.</p>
+        </section>
+        <section id="fees" class="fade-section">
+          <h3 class="text-xl font-bold text-primary">💵 School Fees</h3>
+          <p class="text-gray-600">View & track school fees.</p>
+        </section>
+        <section id="expenses" class="fade-section">
+          <h3 class="text-xl font-bold text-primary">💸 Expenses</h3>
+          <p class="text-gray-600">Track expenditure.</p>
+        </section>
+        <section id="teachers" class="fade-section">
+          <h3 class="text-xl font-bold text-primary">👩‍🏫 Teachers</h3>
+          <p class="text-gray-600">Manage teacher details.</p>
+        </section>
+        <section id="non-teaching" class="fade-section">
+          <h3 class="text-xl font-bold text-primary">🧑‍💼 Non-Teaching Staff</h3>
+          <p class="text-gray-600">Admin and support staff.</p>
+        </section>
+      </div>
+    </main>
   </div>
 
-  <div class="card">
-    <h2>All Students</h2>
-    <input type="text" id="searchStudent" placeholder="Search by name or adm..." />
-    <table>
-      <thead>
-      <tr>
-        <th>Adm</th><th>Name</th><th>Grade</th><th>DOB</th><th>Age</th>
-        <th>Parent</th><th>Phone</th><th>Status</th><th>Actions</th>
-      </tr>
-      </thead>
-      <tbody id="studentTable"></tbody>
-    </table>
-  </div>
-</div>
+  <!-- JS Logic -->
+  <script>
+    const menuBtn = document.getElementById("menuBtn");
+    const sidebar = document.getElementById("sidebar");
+    const sidebarLinks = document.querySelectorAll("aside nav a");
+    const allSections = document.querySelectorAll(".fade-section");
 
-<!-- Toast Notification -->
-<div id="toast" class="toast"></div>
+    menuBtn?.addEventListener("click", () => {
+      sidebar.classList.toggle("-translate-x-full");
+    });
 
-<!-- Edit Confirmation Modal -->
-<div id="editModal">
-  <div class="modal-content">
-    <p>Are you sure you want to update this student’s record?</p>
-    <button id="confirmEdit" style="background:green;">Yes, Update</button>
-    <button id="cancelEdit" style="background:red;">Cancel</button>
-  </div>
-</div>
-
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-  import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyD...", // Replace with yours
-    authDomain: "alfajiri-database.firebaseapp.com",
-    databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
-    projectId: "alfajiri-database",
-    storageBucket: "alfajiri-database.appspot.com"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-
-  const studentForm = document.getElementById("studentForm");
-  const studentTable = document.getElementById("studentTable");
-  const toast = document.getElementById("toast");
-  const modal = document.getElementById("editModal");
-  const confirmEditBtn = document.getElementById("confirmEdit");
-  const cancelEditBtn = document.getElementById("cancelEdit");
-
-  let allStudents = {};
-  let editingStudent = null;
-
-  const calculateAge = (dob) => {
-    const birth = new Date(dob);
-    const now = new Date();
-    let age = now.getFullYear() - birth.getFullYear();
-    if (now < new Date(now.getFullYear(), birth.getMonth(), birth.getDate())) age--;
-    return age;
-  };
-
-  const showToast = (message, type = "success") => {
-    toast.textContent = message;
-    toast.className = `toast ${type}`;
-    toast.style.display = "block";
-    setTimeout(() => { toast.style.display = "none"; }, 3000);
-  };
-
-  const renderStudents = () => {
-    studentTable.innerHTML = "";
-    for (let adm in allStudents) {
-      const s = allStudents[adm];
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${adm}</td>
-        <td>${s.name}</td>
-        <td>${s.grade}</td>
-        <td>${s.dob}</td>
-        <td>${s.age}</td>
-        <td>${s.parent}</td>
-        <td>${s.phone}</td>
-        <td>${s.status}</td>
-        <td>
-          <button onclick="editStudent('${adm}')">Edit</button>
-          <button onclick="deleteStudent('${adm}')">Delete</button>
-        </td>
-      `;
-      studentTable.appendChild(tr);
+    function toggleSubmenu(id) {
+      document.querySelectorAll(".submenu").forEach(menu => {
+        if (menu.id !== id) menu.classList.remove("open");
+      });
+      const submenu = document.getElementById(id);
+      submenu.classList.toggle("open");
     }
-  };
 
-  onValue(ref(db, "ERPManagement/Schools/Alfajiri/Students"), (snapshot) => {
-    allStudents = snapshot.val() || {};
-    renderStudents();
-  });
-
-  studentForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const adm = document.getElementById("adm").value.trim();
-    const name = document.getElementById("fullName").value.trim();
-    const grade = document.getElementById("grade").value;
-    const dob = document.getElementById("dob").value;
-    const parent = document.getElementById("parentName").value.trim();
-    const phone = document.getElementById("parentPhone").value.trim();
-    const admission = document.getElementById("admissionDate").value;
-    const status = document.getElementById("status").value;
-    const age = calculateAge(dob);
-
-    const student = { adm, name, grade, dob, age, parent, phone, admission, status };
-
-    if (editingStudent) {
-      modal.style.display = "flex";
-      confirmEditBtn.onclick = () => {
-        set(ref(db, `ERPManagement/Schools/Alfajiri/Students/${editingStudent}`), student);
-        showToast("Student updated successfully!");
-        modal.style.display = "none";
-        editingStudent = null;
-        studentForm.reset();
-      };
-      cancelEditBtn.onclick = () => {
-        modal.style.display = "none";
-      };
-    } else {
-      set(ref(db, `ERPManagement/Schools/Alfajiri/Students/${adm}`), student)
-        .then(() => {
-          showToast("Student added successfully!");
-          studentForm.reset();
-        });
+    function hideAllSections() {
+      allSections.forEach(section => {
+        section.classList.remove("active");
+      });
     }
-  });
 
-  window.editStudent = (adm) => {
-    const s = allStudents[adm];
-    document.getElementById("adm").value = adm;
-    document.getElementById("fullName").value = s.name;
-    document.getElementById("grade").value = s.grade;
-    document.getElementById("dob").value = s.dob;
-    document.getElementById("parentName").value = s.parent;
-    document.getElementById("parentPhone").value = s.phone;
-    document.getElementById("admissionDate").value = s.admission;
-    document.getElementById("status").value = s.status;
-    editingStudent = adm;
-  };
+    sidebarLinks.forEach(link => {
+      link.addEventListener("click", e => {
+        e.preventDefault();
+        const id = link.getAttribute("href").substring(1);
+        hideAllSections();
+        const section = document.getElementById(id);
+        if (section) section.classList.add("active");
 
-  window.deleteStudent = (adm) => {
-    if (confirm("Delete this student?")) {
-      remove(ref(db, `ERPManagement/Schools/Alfajiri/Students/${adm}`));
-      showToast("Student deleted successfully!", "error");
-    }
-  };
+        // Auto-close sidebar on mobile
+        if (window.innerWidth < 768) {
+          sidebar.classList.add("-translate-x-full");
+        }
+      });
+    });
 
-  document.getElementById("searchStudent").addEventListener("input", (e) => {
-    const term = e.target.value.toLowerCase();
-    const filtered = {};
-    for (let adm in allStudents) {
-      const s = allStudents[adm];
-      if (adm.toLowerCase().includes(term) || s.name.toLowerCase().includes(term)) {
-        filtered[adm] = s;
-      }
-    }
-    studentTable.innerHTML = "";
-    for (let adm in filtered) {
-      const s = filtered[adm];
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${adm}</td>
-        <td>${s.name}</td>
-        <td>${s.grade}</td>
-        <td>${s.dob}</td>
-        <td>${s.age}</td>
-        <td>${s.parent}</td>
-        <td>${s.phone}</td>
-        <td>${s.status}</td>
-        <td>
-          <button onclick="editStudent('${adm}')">Edit</button>
-          <button onclick="deleteStudent('${adm}')">Delete</button>
-        </td>
-      `;
-      studentTable.appendChild(tr);
-    }
-  });
-</script>
+    // Initial display
+    hideAllSections();
+    document.querySelector(".fade-section")?.classList.add("active");
+  </script>
+
 </body>
 </html>
