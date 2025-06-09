@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Class Timetable Viewer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Times New Roman', serif; }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 p-4">
+  <div class="max-w-5xl mx-auto space-y-6">
+    <header class="text-center">
+      <h1 class="text-3xl font-bold text-blue-700">📅 View Class Timetable</h1>
+    </header>
+
+    <!-- Timetable Filters -->
+    <section class="bg-white p-6 rounded-xl shadow-md">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label class="block font-semibold mb-1">Select Class:</label>
+          <select id="classSelector" class="w-full border px-3 py-2 rounded-md"></select>
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">Filter by Subject:</label>
+          <select id="filterSubject" class="w-full border px-3 py-2 rounded-md">
+            <option value="">All Subjects</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">Filter by Teacher:</label>
+          <select id="filterTeacher" class="w-full border px-3 py-2 rounded-md">
+            <option value="">All Teachers</option>
+          </select>
+        </div>
+      </div>
+      <div class="mt-4">
+        <button id="loadBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md">
+          Load Timetable
+        </button>
+      </div>
+    </section>
+
+    <!-- Timetable Display -->
+    <section class="bg-white p-6 rounded-xl shadow space-y-6">
+      <h2 id="timetableHeader" class="text-xl font-semibold text-center text-gray-700"></h2>
+      <div id="weeklyTimetable" class="space-y-6"></div>
+    </section>
+  </div>
+
+  <!-- Firebase and Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
+      authDomain: "alfajiri-database.firebaseapp.com",
+      databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
+      projectId: "alfajiri-database",
+      storageBucket: "alfajiri-database.appspot.com",
+      messagingSenderId: "310417854615",
+      appId: "1:310417854615:web:6f65002a119caeaf9119d2"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const classSelector = document.getElementById("classSelector");
+    const filterSubject = document.getElementById("filterSubject");
+    const filterTeacher = document.getElementById("filterTeacher");
+
+    function populateDropdowns() {
+      // Load classes
+      onValue(ref(db, "grades"), snap => {
+        const grades = snap.val() || {};
+        classSelector.innerHTML = "";
+        Object.keys(grades).forEach(grade => {
+          classSelector.appendChild(new Option(grade, grade));
+        });
+      });
+
+      // Load subjects
+      onValue(ref(db, "subjects"), snap => {
+        const subs = snap.val() || {};
+        filterSubject.innerHTML = '<option value="">All Subjects</option>';
+        Object.keys(subs).forEach(subject => {
+          filterSubject.appendChild(new Option(subject, subject));
+        });
+      });
+
+      // Load teachers from timetable
+      onValue(ref(db, "timetable"), snap => {
+        const data = snap.val() || {};
+        const teachers = new Set();
+        Object.values(data).forEach(classDays =>
+          Object.values(classDays).forEach(dayEntries =>
+            Object.values(dayEntries).forEach(entry => {
+              if (entry.teacher) teachers.add(entry.teacher);
+            })
+          )
+        );
+        filterTeacher.innerHTML = '<option value="">All Teachers</option>';
+        teachers.forEach(teacher => {
+          filterTeacher.appendChild(new Option(teacher, teacher));
+        });
+      });
+    }
+
+    document.getElementById("loadBtn").onclick = async () => {
+      const grade = classSelector.value;
+      const selectedSubject = filterSubject.value;
+      const selectedTeacher = filterTeacher.value;
+      const timetableContainer = document.getElementById("weeklyTimetable");
+      timetableContainer.innerHTML = "";
+      document.getElementById("timetableHeader").innerText = `Weekly Timetable for ${grade}`;
+
+      const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+
+      for (let day of days) {
+        const snapshot = await get(ref(db, `timetable/${grade}/${day}`));
+        const data = snapshot.val();
+        if (!data) continue;
+
+        const rows = Object.values(data)
+          .filter(entry => (!selectedSubject || entry.subject === selectedSubject) &&
+                           (!selectedTeacher || entry.teacher === selectedTeacher))
+          .map(entry => `
+            <tr class="border-b text-center">
+              <td class="p-2">${entry.time}</td>
+              <td class="p-2">${entry.subject}</td>
+              <td class="p-2">${entry.teacher}</td>
+              <td class="p-2">${entry.room || '-'}</td>
+            </tr>
+          `).join("");
+
+        if (rows) {
+          timetableContainer.innerHTML += `
+            <div>
+              <h3 class="text-lg font-semibold text-gray-700 mb-2">${day}</h3>
+              <div class="overflow-auto">
+                <table class="min-w-full border border-gray-300 text-sm">
+                  <thead class="bg-gray-100">
+                    <tr>
+                      <th class="p-2">Time</th>
+                      <th class="p-2">Subject</th>
+                      <th class="p-2">Teacher</th>
+                      <th class="p-2">Room</th>
+                    </tr>
+                  </thead>
+                  <tbody>${rows}</tbody>
+                </table>
+              </div>
+            </div>
+          `;
+        }
+      }
+    };
+
+    populateDropdowns();
+  </script>
+</body>
+</html>
