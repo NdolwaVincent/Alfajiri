@@ -2,205 +2,114 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>School ERP Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Teacher Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#2563EB',
-            secondary: '#1E3A8A',
-            accent: '#F59E0B'
-          }
-        }
-      }
-    }
-  </script>
-  <style>
-    .submenu { display: none; }
-    .submenu.open { display: block; }
-    .fade-section {
-      display: none;
-      opacity: 0;
-      transition: opacity 0.4s ease-in-out;
-    }
-    .fade-section.active {
-      display: block;
-      opacity: 1;
-    }
-  </style>
-</head>
-<body class="bg-gray-100 text-gray-800">
+  <script type="module">
+    // Firebase Configuration
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-  <!-- Top Navbar -->
-  <header class="bg-white shadow-md p-4 flex justify-between items-center sticky top-0 z-50">
-    <h1 class="text-xl font-bold text-primary flex items-center gap-2">
-      🎓 School ERP
-    </h1>
-    <button id="menuBtn" class="md:hidden bg-primary text-white px-3 py-1 rounded">
-      ☰
-    </button>
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      databaseURL: "YOUR_DATABASE_URL",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Fetch Teacher Info (Example: under "teachers/teacherId")
+    const teacherId = "teacher001";
+    const teacherRef = ref(db, 'teachers/' + teacherId);
+
+    get(teacherRef).then((snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        document.getElementById('teacherName').innerText = "Welcome, " + data.name;
+        document.getElementById('profileName').innerText = data.name;
+      } else {
+        console.log("No data available");
+      }
+    }).catch((error) => {
+      console.error(error);
+    });
+  </script>
+</head>
+<body class="bg-gray-100 font-sans">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow-md px-6 py-4 flex justify-between items-center">
+    <div class="text-xl font-bold text-blue-600">SchoolSys</div>
+    <div class="relative">
+      <button onclick="toggleDropdown()" class="flex items-center space-x-2 focus:outline-none">
+        <img src="https://i.pravatar.cc/40" alt="Profile" class="rounded-full w-8 h-8">
+        <span id="profileName" class="text-gray-800 text-sm">Teacher</span>
+        <svg class="w-4 h-4 ml-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      <div id="dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10">
+        <a href="tprofile.html" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a>
+        <a href="settings.html" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Settings</a>
+        <a href="logout.html" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Welcome Section -->
+  <header class="p-6 text-center bg-blue-50 border-b border-blue-200">
+    <h1 id="teacherName" class="text-3xl font-semibold text-blue-700">Welcome, Teacher</h1>
+    <p class="text-gray-600 mt-2">Manage your classes, assignments, and students all in one place.</p>
   </header>
 
-  <div class="flex min-h-screen">
-    <!-- Sidebar -->
-    <aside id="sidebar" class="w-64 bg-white shadow-md p-4 absolute md:relative md:translate-x-0 transform -translate-x-full transition-transform duration-300 ease-in-out z-40 md:z-10 h-screen overflow-y-auto">
-      <nav class="space-y-6 text-sm">
-        <div class="space-y-1">
-          <button onclick="toggleSubmenu('dashboardSub')" class="w-full text-left font-semibold hover:text-primary">📊 Dashboard</button>
-          <div id="dashboardSub" class="submenu ml-4 text-gray-700 space-y-1">
-            <a href="#overview" class="block hover:text-accent">Overview</a>
-            <a href="#summary" class="block hover:text-accent">Summary</a>
-          </div>
-        </div>
-        <div class="space-y-1">
-          <button onclick="toggleSubmenu('studentsSub')" class="w-full text-left font-semibold hover:text-primary">👨‍🎓 Students</button>
-          <div id="studentsSub" class="submenu ml-4 text-gray-700 space-y-1">
-            <a href="#manage-students" class="block hover:text-accent">Manage</a>
-            <a href="#register-student" class="block hover:text-accent">Register</a>
-          </div>
-        </div>
-        <div class="space-y-1">
-          <button onclick="toggleSubmenu('timetableSub')" class="w-full text-left font-semibold hover:text-primary">📅 Timetable</button>
-          <div id="timetableSub" class="submenu ml-4 text-gray-700 space-y-1">
-            <a href="#view-timetable" class="block hover:text-accent">View</a>
-            <a href="#allocate-lessons" class="block hover:text-accent">Allocate Lessons</a>
-            <a href="#weekly-schedule" class="block hover:text-accent">Weekly Schedule</a>
-          </div>
-        </div>
-        <div class="space-y-1">
-          <button onclick="toggleSubmenu('financeSub')" class="w-full text-left font-semibold hover:text-primary">💰 Finance</button>
-          <div id="financeSub" class="submenu ml-4 text-gray-700 space-y-1">
-            <a href="#fees" class="block hover:text-accent">School Fees</a>
-            <a href="#expenses" class="block hover:text-accent">Expenses</a>
-          </div>
-        </div>
-        <div class="space-y-1">
-          <button onclick="toggleSubmenu('staffSub')" class="w-full text-left font-semibold hover:text-primary">👩‍🏫 Staff</button>
-          <div id="staffSub" class="submenu ml-4 text-gray-700 space-y-1">
-            <a href="#teachers" class="block hover:text-accent">Teachers</a>
-            <a href="#non-teaching" class="block hover:text-accent">Non-Teaching</a>
-          </div>
-        </div>
-      </nav>
-    </aside>
+  <!-- Main Section -->
+  <main class="p-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
-    <!-- Main Content -->
-    <main class="flex-1 p-6 md:ml-64">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-        <div class="bg-white border-l-4 border-primary p-4 shadow rounded">
-          <h2 class="text-sm font-semibold text-gray-600">🎓 Total Grades</h2>
-          <p class="text-3xl font-bold">10</p>
-        </div>
-        <div class="bg-white border-l-4 border-primary p-4 shadow rounded">
-          <h2 class="text-sm font-semibold text-gray-600">📅 Timetables</h2>
-          <p class="text-3xl font-bold">50</p>
-        </div>
-        <div class="bg-white border-l-4 border-primary p-4 shadow rounded">
-          <h2 class="text-sm font-semibold text-gray-600">👩‍🏫 Teachers</h2>
-          <p class="text-3xl font-bold">25</p>
-        </div>
-        <div class="bg-white border-l-4 border-primary p-4 shadow rounded">
-          <h2 class="text-sm font-semibold text-gray-600">📚 Subjects</h2>
-          <p class="text-3xl font-bold">35</p>
-        </div>
+      <!-- Card: Manage Classes -->
+      <div class="bg-white shadow-lg rounded-xl p-6 hover:shadow-xl transition cursor-pointer" onclick="window.location.href='classes.html'">
+        <h2 class="text-lg font-bold text-blue-600 mb-2">Manage Classes</h2>
+        <p class="text-gray-600">View and update class schedules and student lists.</p>
       </div>
 
-      <!-- Sections -->
-      <div class="space-y-8">
-        <section id="overview" class="fade-section active">
-          <h3 class="text-xl font-bold text-primary">📊 Dashboard Overview</h3>
-          <p class="text-gray-600">Welcome to the School ERP Dashboard.</p>
-        </section>
-        <section id="summary" class="fade-section">
-          <h3 class="text-xl font-bold text-primary">📈 Summary</h3>
-          <p class="text-gray-600">School performance and stats.</p>
-        </section>
-        <section id="manage-students" class="fade-section">
-          <h3 class="text-xl font-bold text-primary">👨‍🎓 Manage Students</h3>
-          <p class="text-gray-600">Manage student data.</p>
-        </section>
-        <section id="register-student" class="fade-section">
-          <h3 class="text-xl font-bold text-primary">📝 Register Student</h3>
-          <p class="text-gray-600">Add new students.</p>
-        </section>
-        <section id="view-timetable" class="fade-section">
-          <h3 class="text-xl font-bold text-primary">🗓️ View Timetable</h3>
-          <p class="text-gray-600">Weekly class schedule.</p>
-        </section>
-        <section id="allocate-lessons" class="fade-section">
-          <h3 class="text-xl font-bold text-primary">📚 Allocate Lessons</h3>
-          <p class="text-gray-600">Assign lessons to teachers.</p>
-        </section>
-        <section id="weekly-schedule" class="fade-section">
-          <h3 class="text-xl font-bold text-primary">📅 Weekly Schedule</h3>
-          <p class="text-gray-600">Timetable overview.</p>
-        </section>
-        <section id="fees" class="fade-section">
-          <h3 class="text-xl font-bold text-primary">💵 School Fees</h3>
-          <p class="text-gray-600">View & track school fees.</p>
-        </section>
-        <section id="expenses" class="fade-section">
-          <h3 class="text-xl font-bold text-primary">💸 Expenses</h3>
-          <p class="text-gray-600">Track expenditure.</p>
-        </section>
-        <section id="teachers" class="fade-section">
-          <h3 class="text-xl font-bold text-primary">👩‍🏫 Teachers</h3>
-          <p class="text-gray-600">Manage teacher details.</p>
-        </section>
-        <section id="non-teaching" class="fade-section">
-          <h3 class="text-xl font-bold text-primary">🧑‍💼 Non-Teaching Staff</h3>
-          <p class="text-gray-600">Admin and support staff.</p>
-        </section>
+      <!-- Card: Assignments -->
+      <div class="bg-white shadow-lg rounded-xl p-6 hover:shadow-xl transition cursor-pointer" onclick="window.location.href='assignments.html'">
+        <h2 class="text-lg font-bold text-green-600 mb-2">Assignments</h2>
+        <p class="text-gray-600">Create, update, and grade assignments for students.</p>
       </div>
-    </main>
-  </div>
 
-  <!-- JS Logic -->
+      <!-- Card: Attendance -->
+      <div class="bg-white shadow-lg rounded-xl p-6 hover:shadow-xl transition cursor-pointer" onclick="window.location.href='timetable.html'">
+        <h2 class="text-lg font-bold text-yellow-600 mb-2">Timetable</h2>
+        <p class="text-gray-600">Mark and review student attendance records.</p>
+      </div>
+
+      <!-- Card: Messages -->
+      <div class="bg-white shadow-lg rounded-xl p-6 hover:shadow-xl transition cursor-pointer" onclick="window.location.href='messages.html'">
+        <h2 class="text-lg font-bold text-purple-600 mb-2">Messages</h2>
+        <p class="text-gray-600">Send and receive messages from students and parents.</p>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Dropdown Toggle -->
   <script>
-    const menuBtn = document.getElementById("menuBtn");
-    const sidebar = document.getElementById("sidebar");
-    const sidebarLinks = document.querySelectorAll("aside nav a");
-    const allSections = document.querySelectorAll(".fade-section");
-
-    menuBtn?.addEventListener("click", () => {
-      sidebar.classList.toggle("-translate-x-full");
-    });
-
-    function toggleSubmenu(id) {
-      document.querySelectorAll(".submenu").forEach(menu => {
-        if (menu.id !== id) menu.classList.remove("open");
-      });
-      const submenu = document.getElementById(id);
-      submenu.classList.toggle("open");
+    function toggleDropdown() {
+      const dropdown = document.getElementById("dropdown");
+      dropdown.classList.toggle("hidden");
     }
 
-    function hideAllSections() {
-      allSections.forEach(section => {
-        section.classList.remove("active");
-      });
+    window.onclick = function (event) {
+      if (!event.target.closest("button")) {
+        document.getElementById("dropdown").classList.add("hidden");
+      }
     }
-
-    sidebarLinks.forEach(link => {
-      link.addEventListener("click", e => {
-        e.preventDefault();
-        const id = link.getAttribute("href").substring(1);
-        hideAllSections();
-        const section = document.getElementById(id);
-        if (section) section.classList.add("active");
-
-        // Auto-close sidebar on mobile
-        if (window.innerWidth < 768) {
-          sidebar.classList.add("-translate-x-full");
-        }
-      });
-    });
-
-    // Initial display
-    hideAllSections();
-    document.querySelector(".fade-section")?.classList.add("active");
   </script>
 
 </body>
